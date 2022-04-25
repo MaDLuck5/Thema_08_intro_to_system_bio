@@ -3,23 +3,124 @@ title: "R Notebook"
 output: html_document
 ---
 
-The [R plugin](https://www.jetbrains.com/help/pycharm/r-plugin-support.html) for IntelliJ-based IDEs provides
-handy capabilities to work with the [R Markdown](https://www.jetbrains.com/help/pycharm/r-markdown.html) files.
-To [add](https://www.jetbrains.com/help/pycharm/r-markdown.html#add-code-chunk) a new R chunk,
+Les 1
+
+
+
+Voor deze opdracht wordt er gewerkt in groepen van 2. We gaan het proces van een toevoeging aan een volume met een correctiepercentage bestuderen. Allereerst verzamelen we reële data met een experiment. Vervolgens proberen we dat na te bouwen met een model. De uitkomsten van het model vergelijken we met de uitkomsten van het experiment. Daarna beantwoorden we een aantal vragen over het model.
+
+
+1.0 Experiment
+Iedere groep krijgt een zak M&M’s en een schaal. We gaan vervolgens de schaal vullen volgens het volgende principe: voeg 10 stuks toe en haal vervolgens 10% eraf (toevoeging = +10 - 0.1 * nieuw volume) oftewel
+
+dY = 10 - 0.1 * (Y+10)
+
+De uitkomst ziet er als volgt uit (hier alleen eerste 6)
+
+##      time  Volume
+## [1,]    0  0.0000
+## [2,]    1  9.0000
+## [3,]    2 17.1000
+## [4,]    3 24.3900
+## [5,]    4 30.9510
+## [6,]    5 36.8559
+Op een gegeven moment neemt de toename in volume af, doordat de correctie groter wordt (omdat het nieuwe volume groter wordt) maar de toevoeging zelf blijft 10. Uiteindelijk zal er evenveel gecorrigeerd worden (10) als er toegevoegd wordt (10). De toename is dan 0. Wij noemen dit een evenwicht status.
+
+Ga met dit experiment door totdat je een evenwicht status hebt gevonden.
+
+Beantwoord de volgende vragen
+[1] Welke parameters (constantes) zitten er in de vergelijking?
+[2] Welke variabele uit de vergelijking veranderd steeds?
+[3] Wat is de initiele waarde van de variabele uit vraag 2?
+[4] Wat is het tijdsframe van dit experiment? (t = 0 tot t = ……. )
+[5] Wanneer is het evenwichtsmoment?
+[6] Uit welke variabele uit de vergelijking kunnen we dat aflezen?
+Laat je antwoorden aan de docent zien.
+
+
+
+
+
+
+2.0 Programmeer opdracht
+We gaan nu het experiment modeleren in R. Start R studio op en begin een nieuw R script. Allereerst moeten we de library voor deSolve laden. (Eventueel package installeren)
 ```{r}
-
+library(deSolve)
 ```
-position the caret at any line or the code chunk, then click "+".
+Vervolgens hebben we het volgende nodig:
 
-The code chunk appears:
+parameters and variables that are involved
+equations that describe the change / effect
+initial state
+timeframe for the simulation
+De parameters zetten we bij elkaar in een vector. In dit geval zijn er twee parameters: addVolume = 10 en percentage_volume = 0.1
 ```{r}
+parameters <- c(addVolume = 10, pV = 0.1)
 ```
-
-Type any R code in the chunk, for example:
+Het model kunnen we maken met een functie waarin de vergelijkingen zijn opgenomen. Van belang is dat we de functie een tijdframe meegeven, een initiele y-waarde (startwaarde) en de parameters die nodig zijn voor de vergelijkingen. De deSolve package heeft al dit nodig voor zijn simulaties. In de functie geven we een list met parameters mee en returnen we weer een list met resultaten. Let op: de resultaten zijn de afgeleides, niet de Y waarde zelf! De functie bevat natuurlijk ook de vergelijking:
 ```{r}
-mycars <- within(mtcars, { cyl <- ordered(cyl) })
-mycars
+# define model
+volume <- function(t,y,parms){
+  with(as.list(c(parms)),{
+         dY <- addVolume - pV * (y+addVolume)
+         return(list(c(dY)))
+       }
+       )
+}
+```
+De startwaarde geven we ook op. Bij een 3D model zijn er meerder startwaardes die we dan met een vector weer kunnen meegeven. In dit geval hebben we maar 1 startwaarde: Volume = 0
+
+#initial state
+```{r}
+state <- c(Volume = 0)
+Als laatste heeft de functie ook een timeframe nodig (simulatietijd).
 ```
 
-Now, click the **Run** button on the chunk toolbar to [execute](https://www.jetbrains.com/help/pycharm/r-markdown.html#run-r-code) the chunk code. The result should be placed under the chunk.
-Click the **Knit and Open Document** to build and preview an output.
+
+#define time sequence you want to run the model
+```{r}
+times <- seq(0, 100,  by = 1)
+```
+De parameters, de initiële startwaarde, de timeframe en de functie met de vergelijkingen zijn nu gedefinieerd. Ik kan de simulatie nu runnen met behulp van ode. Ode heeft minimaal nodig als argumenten time (timeframe),y (wat is de uitkomstwaarde), parms (parameters), func (modelfunctie). Typisch voor ode is dus dat de functie ode de y waardes teruggeeft daar waarde modelfunctie volume de verandering dY uitrekent. ode gebruikt dus het resultaat van de volume functie om y uit te rekenen.
+
+Gebruik help(ode) voor meer informatie. In dit geval vertellen we ode ook nog de euler methode te gebruiken.
+
+# run simulation using continuous approach
+```{r}
+out  <- ode(times = times, y = state,   parms = parameters, func = volume, method = "euler")
+```
+De resultaten zijn nu in out opgeslagen. Om de resultaten te bekijken kunnen we de resultaten printen en plotten.
+```{r}
+head(out)
+##      time  Volume
+## [1,]    0  0.0000
+## [2,]    1  9.0000
+## [3,]    2 17.1000
+## [4,]    3 24.3900
+## [5,]    4 30.9510
+## [6,]    5 36.8559
+plot(out)
+```
+
+Run het script en vergelijk de uitkomsten van het script met je experiment.
+
+Beantwoord de volgende vragen
+[1] Verander de parameters. Wat is het effect?
+[2] Verander de initiële waarde. Wat is het effect?
+[3] Verander de timeframe. Wat is het effect?
+[4] Verander het originele model zodat de correctie niet is op basis van (y+addVolume) maar y. Wanneer is er nu een evenwichts toestand?
+
+
+
+
+
+
+
+3.0 Oefenen met de tutorial
+Lees de tutorial van deSolve (Karline Soetaert et all) blz 1..5 (lorenz case) en section 10.1 .. 10.3. Type de scripts over en kijk of je dezelfde resultaten kunt bereiken. beantwoord voor elke case de vraag:
+
+[1] Welke parameters (constantes) zitten er in de vergelijking(en)?
+[2] Wat is/zijn de initiële waarde(s)
+[3] Wat is het tijdsframe van dit experiment?
+[4] Beschrijf in je eigen woorden wat de plots laten zien (indien van toepassing)
+
