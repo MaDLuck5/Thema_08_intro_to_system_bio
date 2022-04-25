@@ -30,12 +30,20 @@ Ga met dit experiment door totdat je een evenwicht status hebt gevonden.
 
 Beantwoord de volgende vragen
 [1] Welke parameters (constantes) zitten er in de vergelijking?
+1 aantal M&Ms wat toegevoegd word en 2 percentage wat afgetrokken word
+
 [2] Welke variabele uit de vergelijking veranderd steeds?
+nummer 2 percentage wat steeds afgetrokken word
 [3] Wat is de initiele waarde van de variabele uit vraag 2?
+1
 [4] Wat is het tijdsframe van dit experiment? (t = 0 tot t = ……. )
+bij t = 188
 [5] Wanneer is het evenwichtsmoment?
+bij dY = 85 maar omdat we geen halve m en m s hebben
 [6] Uit welke variabele uit de vergelijking kunnen we dat aflezen?
 Laat je antwoorden aan de docent zien.
+
+0.1 * y+10 moet gelijk zijn aan 10 of in dit geval niet hoog genoeg om afgerond 86 te worden
 
 
 
@@ -45,7 +53,7 @@ Laat je antwoorden aan de docent zien.
 2.0 Programmeer opdracht
 We gaan nu het experiment modeleren in R. Start R studio op en begin een nieuw R script. Allereerst moeten we de library voor deSolve laden. (Eventueel package installeren)
 ```{r}
-library(deSolve)
+library("deSolve")
 ```
 Vervolgens hebben we het volgende nodig:
 
@@ -63,7 +71,7 @@ Het model kunnen we maken met een functie waarin de vergelijkingen zijn opgenome
 volume <- function(t,y,parms){
   with(as.list(c(parms)),{
          dY <- addVolume - pV * (y+addVolume)
-         return(list(c(dY)))
+         return(list(c(round(dY, 0))))
        }
        )
 }
@@ -73,13 +81,14 @@ De startwaarde geven we ook op. Bij een 3D model zijn er meerder startwaardes di
 #initial state
 ```{r}
 state <- c(Volume = 0)
-Als laatste heeft de functie ook een timeframe nodig (simulatietijd).
+
 ```
+Als laatste heeft de functie ook een timeframe nodig (simulatietijd).
 
 
 #define time sequence you want to run the model
 ```{r}
-times <- seq(0, 100,  by = 1)
+times <- seq(0, 160,  by = 1)
 ```
 De parameters, de initiële startwaarde, de timeframe en de functie met de vergelijkingen zijn nu gedefinieerd. Ik kan de simulatie nu runnen met behulp van ode. Ode heeft minimaal nodig als argumenten time (timeframe),y (wat is de uitkomstwaarde), parms (parameters), func (modelfunctie). Typisch voor ode is dus dat de functie ode de y waardes teruggeeft daar waarde modelfunctie volume de verandering dY uitrekent. ode gebruikt dus het resultaat van de volume functie om y uit te rekenen.
 
@@ -91,7 +100,7 @@ out  <- ode(times = times, y = state,   parms = parameters, func = volume, metho
 ```
 De resultaten zijn nu in out opgeslagen. Om de resultaten te bekijken kunnen we de resultaten printen en plotten.
 ```{r}
-head(out)
+tail(out)
 ##      time  Volume
 ## [1,]    0  0.0000
 ## [2,]    1  9.0000
