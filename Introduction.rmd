@@ -70,7 +70,7 @@ Het model kunnen we maken met een functie waarin de vergelijkingen zijn opgenome
 # define model
 volume <- function(t,y,parms){
   with(as.list(c(parms)),{
-         dY <- addVolume - pV * (y+addVolume)
+         dY <- addVolume - pV * (y)
          return(list(c(round(dY, 0))))
        }
        )
@@ -115,10 +115,15 @@ Run het script en vergelijk de uitkomsten van het script met je experiment.
 
 Beantwoord de volgende vragen
 [1] Verander de parameters. Wat is het effect?
-[2] Verander de initiële waarde. Wat is het effect?
-[3] Verander de timeframe. Wat is het effect?
-[4] Verander het originele model zodat de correctie niet is op basis van (y+addVolume) maar y. Wanneer is er nu een evenwichts toestand?
+bij meer volume een sneller evenwicht, bij vergroting van add volume een verschuiving van het evenwicht naar een latere tijd
 
+[2] Verander de initiële waarde. Wat is het effect?
+verschuiving van het evenwicht naar links (eerder)
+
+[3] Verander de timeframe. Wat is het effect?
+* geen
+[4] Verander het originele model zodat de correctie niet is op basis van (y+addVolume) maar y. Wanneer is er nu een evenwichts toestand?
+verandering van het evenwicht naar 95
 
 
 
