@@ -17,11 +17,20 @@ m is the number of new transcripts produced per second
 In dit geval kunnen we fictieve waarden gebruiken voor R, r en m.
 
 Beantwoord de volgende vragen
-[1] Welke parameters moet je programmeren?: de parameters zijn r,R en m
-[2] Zoek bronnen op internet die uitleggen waar de formule dR/dt = -rR + m vandaan komt.
-[3] Teken het biologisch model en leg de vertaling naar de formule uit.
-[4] Wat is de return waarde van de model functie in R? Waarom return je die en niet R zelf?
+[1] Welke parameters moet je programmeren?
+De parameters zijn r,R en m
 
+[2] Zoek bronnen op internet die uitleggen waar de formule dR/dt = -rR + m vandaan komt.
+https://tbb.bio.uu.nl/rdb/books/bmAnswers.pdf
+Er lijkt erop dat de formule is afgeleid uit formules voor populatie controles.
+Er komt namelijk de volgende formule in voor: dR/dt = rR(1 − R/K)
+
+[3] Teken het biologisch model en leg de vertaling naar de formule uit.
+Zie de image: Biological_model_mRNA.png
+
+[4] Wat is de return waarde van de model functie in R? Waarom return je die en niet R zelf?
+De return waarde van de model functie is de Delta R. Dit is de veranderde waarde.
+De Delta R is namelijk het verschil met de vorige waarde, zodat deze gemakkelijk in een grafiek geplot kan worden.
 
 
 
