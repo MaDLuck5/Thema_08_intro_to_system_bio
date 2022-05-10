@@ -1,1 +1,51 @@
+# Week 1: mRNA dynamic
 
+De vorige les hebben we gewerkt met de afgeleide functie: dVolume / dt = a - p * (Volume + a). We hebben gezien dat hoewel a (hoeveelheid toegevoegd volume 10) en p (percentage 0.1) constant zijn de toename in volume (dVolume) per tijdstip verschilt. Op een gegeven moment bereikt deze toename zelfs een evenwichtstoestand. Het volume neemt niet meer toe, de toename dVolume = 0. We noemen dVolume/dt de afgeleide functie (de functie die de verandering per tijdseenheid beschrijft).
+
+In deze les staan we stil bij het biologisch model of een reactie schema en de vertaling daarvan naar afgeleide functies. De docent zal op het bord het een en ander uitleggen. Maak aantekeningen.
+
+
+
+## 1.0 opdracht
+In deze opdracht gaan we de mRNA dynamic programmeren. We gebruiken hiervoor het model
+
+dR/dt = -rR + m
+
+R is the number of transcripts
+r is the rate of decay of existing transcripts
+m is the number of new transcripts produced per second
+In dit geval kunnen we fictieve waarden gebruiken voor R, r en m.
+
+Beantwoord de volgende vragen
+[1] Welke parameters moet je programmeren?
+[2] Zoek bronnen op internet die uitleggen waar de formule dR/dt = -rR + m vandaan komt.
+[3] Teken het biologisch model en leg de vertaling naar de formule uit.
+[4] Wat is de return waarde van de model functie in R? Waarom return je die en niet R zelf?
+
+
+
+## 2.0 Programmeeropdracht
+Programmeer de parameter vector met waardes, de model functie, de startwaarde en de timesequence.
+
+Run drie scenario’s.
+
+system is at the steady state,
+number of mRNA is increasing over time,
+number of mRNA is decreasing over time.
+De uitkomsten van de scenario’s moet je plotten in een grafiek. Een voorbeeld is als volgt:
+
+```{r}
+
+```
+
+
+
+
+Extra opdrachten
+De volgende opdrachten hoeven niet ingeleverd te worden maar zijn voor eigen oefening:
+
+3.0 Extra opdracht Lotka-Volterra model
+Hoofdstuk 3.1 tot 3.4 in deSolve paper https://www.bioinf.nl/~fennaf/thema08/deSolve_paper.pdf beschrijft hoe je in R lotka-Volterra model kunt implementeren. Probeer per script voorbeeld het biologische schema te tekenen. Beschrijf ook wat de eenheden per parameter zijn (voorbeeld van eenheden zijn aantal per dag, aantallen, m per seconde etc.). Mocht je dit erg leuk vinden kun je ook door met 3.5
+
+4.0 Extra opdracht SIR model
+Bestudeer de volgende paper :http://sherrytowers.com/2012/12/11/simple-epidemic-modelling-with-an-sir-model/ Schrijf een korte samenvatting van het biologische model, de afgeleide functies die het model beschrijven, de opzet van de code in je eigen woorden en de analyse in je eigen woorden.
