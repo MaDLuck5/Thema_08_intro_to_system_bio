@@ -52,18 +52,18 @@ transcripts <- function(t,R,params){
 }
 
 test <- function (parameters){
-
-  return(ode(times = times, y = starting_state,   parms = parameters, func = transcripts, method = "euler"))
+  ode(times = times, y = starting_state,   parms = parameters, func = transcripts, method = "euler")
 }
 
 out  <- lapply(parameter_list, test)
 
 colors <- c("green", "red", "blue")
-plot(NULL, xlim=c(0,25), ylim=c(0,2000))
+data.frame(situation1 = out[[1]][,2],
+           situation2 = out[[2]][,2],
+           situation3 = out[[3]][,2])
 
-for (i in length(out)){
-  print(out[i])
-  lines(x=out[i]$time, y=out[i]$R, col=colors[i])
+for (i in out){
+
 }
 
 
