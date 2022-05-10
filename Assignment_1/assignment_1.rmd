@@ -24,6 +24,7 @@ Beantwoord de volgende vragen
 
 
 
+
 ## 2.0 Programmeeropdracht
 Programmeer de parameter vector met waardes, de model functie, de startwaarde en de timesequence.
 
@@ -40,27 +41,26 @@ library("ggplot2")
 
 parameter_list <- list(c(r = 0.5,m = 40), c(r = 0.5, m = 50), c(r = 0.5 ,m = 60))
 starting_state <- c(R = 100)
-times <- seq(1, 25,  by = 1)
+times <- seq(1, 15,  by = 1)
 
 transcripts <- function(t,R,params){
   with(as.list(c(params)),{
-         R <- -r * R + m
-         return(list(R))
+         delta.R <- -r * R + m
+         return(list(delta.R))
        }
        )
 }
 
-test <- function (parameters){
-
+perform_ode <- function (parameters){
   ode(times = times, y = starting_state,   parms = parameters, func = transcripts, method = "euler")
 }
 
-out  <- lapply(parameter_list, test)
+out  <- lapply(parameter_list, perform_ode)
 
-plot(as.data.frame(out[2]), type = "line", col = "blue")
+plot(as.data.frame(out[2]), type = "line", col = "blue", ylim=c(75,125))
 lines(as.data.frame(out[1]), type = "line", col = "red")
 lines(as.data.frame(out[3]), type = "line", col = "green")
-legend(15,140, legend = c("steady state" ,"mRNA increasing", "mRNA decreasing" ), border = c("blue", "green",  "red"), fill = TRUE)
+legend(10,115, legend = c("steady state" ,"mRNA increasing", "mRNA decreasing" ), fill = c("blue", "green",  "red"))
 ```
 
 
