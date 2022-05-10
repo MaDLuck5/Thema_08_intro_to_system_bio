@@ -38,35 +38,29 @@ De uitkomsten van de scenario’s moet je plotten in een grafiek. Een voorbeeld 
 library("deSolve")
 library("ggplot2")
 
-parameter_list <- list(c(r = 0.05,m = 69), c(r = 0.69, m = 69), c(r = 0.8,m = 69))
+parameter_list <- list(c(r = 0.5,m = 40), c(r = 0.5, m = 50), c(r = 0.5 ,m = 60))
 starting_state <- c(R = 100)
-times <- seq(0, 20,  by = 1)
-
+times <- seq(1, 25,  by = 1)
 
 transcripts <- function(t,R,params){
   with(as.list(c(params)),{
-         R <- (-r * R + m) * t
-         return(list(c(round(R, 0))))
+         R <- -r * R + m
+         return(list(R))
        }
        )
 }
 
 test <- function (parameters){
+
   ode(times = times, y = starting_state,   parms = parameters, func = transcripts, method = "euler")
 }
 
 out  <- lapply(parameter_list, test)
 
-colors <- c("green", "red", "blue")
-data.frame(situation1 = out[[1]][,2],
-           situation2 = out[[2]][,2],
-           situation3 = out[[3]][,2])
-
-for (i in out){
-
-}
-
-
+plot(as.data.frame(out[2]), type = "line", col = "blue")
+lines(as.data.frame(out[1]), type = "line", col = "red")
+lines(as.data.frame(out[3]), type = "line", col = "green")
+legend(15,140, legend = c("steady state" ,"mRNA increasing", "mRNA decreasing" ), border = c("blue", "green",  "red"), fill = TRUE)
 ```
 
 
