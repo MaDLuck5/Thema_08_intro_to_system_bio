@@ -15,3 +15,14 @@ Implementeer het model in R, waarbij je er van uit kunt gaan dat de concentratie
 Simuleer het model voor een duur van twee dagen. Let op: de snelheidsconstante is per uur, dus de tijdsframe moet hier rekening mee houden
 
 Beschrijf de resultaten: Wat gebeurt er in de tijd en hoe kun je dit verklaren aan de hand van de interacties tussen de variabelen? Welke veranderingen treden op in (a) de concentratie vrije receptor, (b) de concentratie cytosol MPL-receptor complex, (c) de concentratie geactiveerd MPL-receptor complex, de totale concentratie receptoren en de concentratie receptor mRNA. Bepaal welke variabele het belangrijkst is voor de werking van het geneesmiddel en beschrijf deze in detail.
+```{r}
+parameter_list <- c(ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22)
+initial_val = c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
+transcripts <- function(params){
+  with(as.list(c(params)),{
+
+         return(list())
+       }
+       )
+}
+```
