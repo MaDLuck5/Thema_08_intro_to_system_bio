@@ -10,6 +10,16 @@ Schrijf een korte introductie over corticosteroiden, het gebruik ervan en het we
 
 Beschrijf op basis van het model hoe de interactie verloopt tussen het geneesmiddel en de productie van receptor.
 
+Glucocorticosteroids, also known as corticosteroids or simply steroids. Are a class of steroid hormones.
+They are produced in the cortex of the adrenal glands and have a pivotal role in glucose, protein and fat metabolism of the body.
+These steroids are of clinical & medicinal importance due to their anti-inflammatory, anti-allergic and immune-suppresive role in the body.
+The main use of these steroids is however for anti-inflammatory therapy, as they are the most effective anti-flammatory therapy for asthma.
+However, they are relatively ineffective in chronic obstructive pulmonary disease. This suppression of inflammation occurs via several molecular mechanisms.
+Glucorticoids suppress the multiple inflammatory genes active in chronic inflammatory diseases, such as asthma, by reversing histone acetylation of activated inflammatory genes through binding of ligand-bound glucocorticoid receptors (GR) to co-activator molecules and recruitment of histone deacetylase-2 to the activated inflammatory gene transcription complex.
+At higher concentrations of glucorticoids GR homodimers interact with DNA recognition sites to activate transcription through increased histone acetylation of anti-inflammatory genes and transcription of several genes linked to glucocorticoid side effects.
+
+Sources: https://pubmed.ncbi.nlm.nih.gov/21198556/ , https://pubmed.ncbi.nlm.nih.gov/27796513/ , https://www.ncbi.nlm.nih.gov/books/NBK560897/
+
 Implementeer het model in R, waarbij je er van uit kunt gaan dat de concentratie MPL constant is (een parameter) en gelijk is aan 20 ng/mL. Denk er om dat de eenheid omgerekend moet worden om de vergelijkingen kloppend te maken. Dus 20 ng/ml * 1000 ml/L * 1 mol/ molgewicht g geeft nmol/L.
 
 Simuleer het model voor een duur van twee dagen. Let op: de snelheidsconstante is per uur, dus de tijdsframe moet hier rekening mee houden
