@@ -48,3 +48,6 @@ out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, met
 
 plot(out)
 ```
+
+Beschrijf de resultaten: Wat gebeurt er in de tijd en hoe kun je dit verklaren aan de hand van de interacties tussen de variabelen? Welke veranderingen treden op in (a) de concentratie vrije receptor, (b) de concentratie cytosol MPL-receptor complex, (c) de concentratie geactiveerd MPL-receptor complex, de totale concentratie receptoren en de concentratie receptor mRNA. Bepaal welke variabele het belangrijkst is voor de werking van het geneesmiddel en beschrijf deze in detail.
+
