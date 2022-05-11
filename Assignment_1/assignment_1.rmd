@@ -49,7 +49,7 @@ De uitkomsten van de scenario’s moet je plotten in een grafiek. Een voorbeeld 
 library("deSolve")
 library("ggplot2")
 
-parameter_list <- list(c(r = 0.5,m = 40), c(r = 0.5, m = 50), c(r = 0.5 ,m = 60))
+parameter_list <- list(c(r = 0.6,m = 50), c(r = 0.5, m = 50), c(r = 0.4 ,m = 50))
 starting_state <- c(R = 100)
 times <- seq(1, 15,  by = 1)
 
