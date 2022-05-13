@@ -51,3 +51,12 @@ plot(out)
 
 Beschrijf de resultaten: Wat gebeurt er in de tijd en hoe kun je dit verklaren aan de hand van de interacties tussen de variabelen? Welke veranderingen treden op in (a) de concentratie vrije receptor, (b) de concentratie cytosol MPL-receptor complex, (c) de concentratie geactiveerd MPL-receptor complex, de totale concentratie receptoren en de concentratie receptor mRNA. Bepaal welke variabele het belangrijkst is voor de werking van het geneesmiddel en beschrijf deze in detail.
 
+Er is te zien aan het begin dat er een grote hoeveelheid receptor mRNA en een hoge concentratie vrije receptor aanwezig zijn.
+Naarmate de tijd neemt de receptor mRNA eerst af tot een laagte-punt waarna het stabiliseert op een waarde 1/3de van de top.
+De concentratie vrije receptor wordt vrij snel omgezet tot cytosol MPL-receptor complexen en kort daarna ook tot geactiveerde MPL-receptor complexen in de nucleus.
+Er is te zien in de grafieken dat de totale concentratie van receptoren nauwelijks of niet lijkt te veranderen. Echter, is wel te zien dat de concentratie
+van receptor mRNA zich stabiliseert op een lagere concentratie.
+
+Hieruit wordt geconcludeerd dat de belangrijkste waarde voor het geneesmiddel de concentratie van de vrije receptor is. Aangezien hieruit de complexen
+worden geactiveerd en er geen nieuwe aanmaak van vrije receptoren te zien is in het model. Een hogere concentratie van vrije receptor
+zou dan voor een sterkere inhibitie van ontstekingsfactoren zorgen.
