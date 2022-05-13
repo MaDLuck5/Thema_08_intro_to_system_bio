@@ -1,22 +1,28 @@
 ---
-title: "R Notebook"
+title: Assignment 3
 output: html_notebook
 ---
 
-The [R plugin](https://www.jetbrains.com/help/pycharm/r-plugin-support.html) for IntelliJ-based IDEs provides
-handy capabilities to work with the [R Markdown](https://www.jetbrains.com/help/pycharm/r-markdown.html) files.
-To [add](https://www.jetbrains.com/help/pycharm/r-markdown.html#add-code-chunk) a new R chunk,
-position the caret at any line or the code chunk, then click "+".
-
-The code chunk appears:
 ```{r}
-```
+library("deSolve")
 
-Type any R code in the chunk, for example:
-```{r}
-mycars <- within(mtcars, { cyl <- ordered(cyl) })
-mycars
-```
+D <- (20 * 1000)/374.471
+parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
+state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
+times <- seq(0, 48,  by = 1)
 
-Now, click the **Run** button on the chunk toolbar to [execute](https://www.jetbrains.com/help/pycharm/r-markdown.html#run-r-code) the chunk code. The result should be placed under the chunk.
-Click the **Knit and Open Document** to build and preview an output.
+Grd_model <- function(t, y, parms){
+  with(as.list(c(parms, y)),{
+    Rmo.delta <- Ks_rm * (1-(DRN / (ic50_rm + DRN)))- Kd_Rm * Rmo
+    R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
+    DR.delta <- Kon * D * Ro - Kt * DR
+    DRN.delta <- Kt * DR - Kre * DRN
+
+        return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta)))
+       })
+}
+
+out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+plot(out)
+```
