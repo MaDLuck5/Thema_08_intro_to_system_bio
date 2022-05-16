@@ -7,6 +7,18 @@ output: html_notebook
 data <- read.csv("Assignment_3/Data/MPL.csv", na.strings = "NA")
 median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
 median_MPL_01
+
+median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm=T)
+median_MPL_03
+
+medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],list(data$dose,data$time), median, na.rm=T)
+names(medians)[1:2] <- c("dose","time")
+head(medians)
+
+dataset_low_dose <- subset(medians, dose == 0.1)
+dataset_high_dose <- subset(medians, dose == 0.3)
+head(dataset_low_dose)
+head(dataset_high_dose)
 ```
 ```{r}
 library("deSolve")
@@ -14,7 +26,7 @@ library("deSolve")
 D <- (median_MPL_01 * 1000)/374.471
 parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
 state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
-times <- seq(0, 48,  by = 1)
+times <- seq(0, 168,  by = 1)
 
 Grd_model <- function(t, y, parms){
   with(as.list(c(parms, y)),{
@@ -30,4 +42,5 @@ Grd_model <- function(t, y, parms){
 out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
 
 plot(out)
+lines(MPL_conc~time, data=data_smoll_dose)
 ```

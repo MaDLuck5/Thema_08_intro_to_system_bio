@@ -23,8 +23,6 @@ Sources: https://pubmed.ncbi.nlm.nih.gov/21198556/ , https://pubmed.ncbi.nlm.nih
 ## Implementeer het model in R, waarbij je er van uit kunt gaan dat de concentratie MPL constant is (een parameter) en gelijk is aan 20 ng/mL. Denk er om dat de eenheid omgerekend moet worden om de vergelijkingen kloppend te maken. Dus 20 ng/ml * 1000 ml/L * 1 mol/ molgewicht g geeft nmol/L.
 
 ## Simuleer het model voor een duur van twee dagen. Let op: de snelheidsconstante is per uur, dus de tijdsframe moet hier rekening mee houden
-
-## Beschrijf de resultaten: Wat gebeurt er in de tijd en hoe kun je dit verklaren aan de hand van de interacties tussen de variabelen? Welke veranderingen treden op in (a) de concentratie vrije receptor, (b) de concentratie cytosol MPL-receptor complex, (c) de concentratie geactiveerd MPL-receptor complex, de totale concentratie receptoren en de concentratie receptor mRNA. Bepaal welke variabele het belangrijkst is voor de werking van het geneesmiddel en beschrijf deze in detail.
 ```{r}
 library("deSolve")
 
@@ -49,7 +47,7 @@ out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, met
 plot(out)
 ```
 
-Beschrijf de resultaten: Wat gebeurt er in de tijd en hoe kun je dit verklaren aan de hand van de interacties tussen de variabelen? Welke veranderingen treden op in (a) de concentratie vrije receptor, (b) de concentratie cytosol MPL-receptor complex, (c) de concentratie geactiveerd MPL-receptor complex, de totale concentratie receptoren en de concentratie receptor mRNA. Bepaal welke variabele het belangrijkst is voor de werking van het geneesmiddel en beschrijf deze in detail.
+## Beschrijf de resultaten: Wat gebeurt er in de tijd en hoe kun je dit verklaren aan de hand van de interacties tussen de variabelen? Welke veranderingen treden op in (a) de concentratie vrije receptor, (b) de concentratie cytosol MPL-receptor complex, (c) de concentratie geactiveerd MPL-receptor complex, de totale concentratie receptoren en de concentratie receptor mRNA. Bepaal welke variabele het belangrijkst is voor de werking van het geneesmiddel en beschrijf deze in detail.
 
 Er is te zien aan het begin dat er een grote hoeveelheid receptor mRNA en een hoge concentratie vrije receptor aanwezig zijn.
 Naarmate de tijd neemt de receptor mRNA eerst af tot een laagte-punt waarna het stabiliseert op een waarde 1/3de van de top.
