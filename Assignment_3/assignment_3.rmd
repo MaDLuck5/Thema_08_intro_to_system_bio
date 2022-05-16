@@ -2,7 +2,12 @@
 title: Assignment 3
 output: html_notebook
 ---
+```{r}
 
+data <- read.csv("Data/MPL.csv", na.strings = "NA")
+median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
+median_MPL_01
+```
 ```{r}
 library("deSolve")
 
