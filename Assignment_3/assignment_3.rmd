@@ -123,14 +123,129 @@ You are going to check what happens if you change the model and model parameters
 ## Questions:
 [1] What would be the time course concentration of the activated drug-receptor complex if there was no auto-regulation of glucocorticoid receptor, i.e. if there was not effect of drug on the synthesis of the receptor mRNA? What formula needs to be changed? Adjust the model, run the simulation and plot the results to find out.
 
+```{r}
+D <- (20 * 1000)/374.471
+parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
+state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
+times <- seq(0, 168,  by = 1)
+
+Grd_model <- function(t, y, parms){
+  with(as.list(c(parms, y)),{
+    Rmo.delta <- Ks_rm * (1-(DRN / (ic50_rm + DRN)))- Kd_Rm * Rmo
+    R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
+    DR.delta <- Kon * D * Ro - Kt * DR
+    DRN.delta <- Kt * DR - Kre * DRN
+
+        return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta)))
+       })
+}
+
+
+out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+plot(out)
+```
+
 [2] What is the time course of receptor and mRNA concentrations when the drug treatment is stopped? So After the steady state is reached (at time t_steady), D should be set to zero and the simulation should continue from time t_steady till the new steady state is reached (t_steady_second). Run the simulations and plot the results from t = 0 till t_steady_second.
+
+```{r}
+D <- (20 * 1000)/374.471
+parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
+state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
+times <- seq(0, 168,  by = 1)
+
+Grd_model <- function(t, y, parms){
+  with(as.list(c(parms, y)),{
+    Rmo.delta <- Ks_rm * (1-(DRN / (ic50_rm + DRN)))- Kd_Rm * Rmo
+    R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
+    DR.delta <- Kon * D * Ro - Kt * DR
+    DRN.delta <- Kt * DR - Kre * DRN
+
+        return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta)))
+       })
+}
+
+
+out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+plot(out)
+```
 
 [3] Different corticosteroids show different association rates from receptors (kon) and different dissociation rates (in this model reflected by kre). Assuming the same concentrations of the drug, what is the effect of different values of kon and kre (consider 2 and 5 times increase and decrease of both parameters separately) on the receptor and mRNA dynamics? Adjust kon and kre as below and plot the results of the simulation for each change. Note: Simulations should be run for 4 new values of kon: 0.00329/5, 0.00329/2, 0.00329*2 and 0.00329*5. The results should be compared to the basic scenario when kon=0.00329 Separately, simulations should be run for 4 new values of kre: 0.57/5, 0.57/2, 0.57*2 and 0.57*5. The results should be compared to the basic scenario when kre= 0.57.
 
+```{r}
+D <- (20 * 1000)/374.471
+parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
+state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
+times <- seq(0, 168,  by = 1)
+
+Grd_model <- function(t, y, parms){
+  with(as.list(c(parms, y)),{
+    Rmo.delta <- Ks_rm * (1-(DRN / (ic50_rm + DRN)))- Kd_Rm * Rmo
+    R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
+    DR.delta <- Kon * D * Ro - Kt * DR
+    DRN.delta <- Kt * DR - Kre * DRN
+
+        return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta)))
+       })
+}
+
+
+out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+plot(out)
+```
+
 [4] What would happen if the synthesis of the receptor was completely blocked? Which parameter needs to be put to zero? Adjust the parameter, run the simulations and plot the results.
+
+```{r}
+D <- (20 * 1000)/374.471
+parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
+state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
+times <- seq(0, 168,  by = 1)
+
+Grd_model <- function(t, y, parms){
+  with(as.list(c(parms, y)),{
+    Rmo.delta <- Ks_rm * (1-(DRN / (ic50_rm + DRN)))- Kd_Rm * Rmo
+    R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
+    DR.delta <- Kon * D * Ro - Kt * DR
+    DRN.delta <- Kt * DR - Kre * DRN
+
+        return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta)))
+       })
+}
+
+
+out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+plot(out)
+```
 
 [5] What is the dynamic of the system when the baseline rate of production of mRNA of the receptor is increased or decreased 2 or 5 fold (recalculate the rate of mRNA degradation so that the steady-state assumption at baseline (without the drug) is still valid, i.e. mRNA levels are constant when there is not drug)? Mind you: ks_Rm values should be changed, but we know that if without the drug the system is at steady-state then kd_Rm = ks_Rm/Rm0. Therefore if we change ks_Rm we need to change kd_Rm as well. Also after we recalculate the value of kd_Rm for the baseline conditions, the simulations should be run with drug present. Simulations should be run for 4 different scenarios:
 ks_Rm = 2.9/5 and kd_Rm=2.9/5/4.74
 ks_Rm = 2.9/2 and kd_Rm=2.9/2/4.74
 ks_Rm = 2.9*2 and kd_Rm=2.9*2/4.74
 ks_Rm = 2.9*5 and kd_Rm=2.9*5/4.74
+
+```{r}
+D <- (20 * 1000)/374.471
+parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
+state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
+times <- seq(0, 168,  by = 1)
+
+Grd_model <- function(t, y, parms){
+  with(as.list(c(parms, y)),{
+    Rmo.delta <- Ks_rm * (1-(DRN / (ic50_rm + DRN)))- Kd_Rm * Rmo
+    R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
+    DR.delta <- Kon * D * Ro - Kt * DR
+    DRN.delta <- Kt * DR - Kre * DRN
+
+        return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta)))
+       })
+}
+
+
+out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+plot(out)
+```
