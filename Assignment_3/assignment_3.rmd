@@ -44,8 +44,8 @@ An example of a the mRNA plot with the model(black line), the experiment(datapoi
 
 ## Questions:
 [1] Why is it best practice to plot the median for the experimental data? Explain in your report
-[2] How do the results of the simulations depend on the dose and concentration of the drug? Compare the model variables mRNA, R with the experimental data by running the simulations adjusting dosis D and plot these to find the answer.
-[3] Are the results of the model in line with experimental data? If not, what could be the reason? Think of at least one explanation. Try to test it with simulations (you will get bonus points for that, your explanation does not need to be correct, but should be logical).
+The reason why it's best to plot with the median is that it gives a representation of the central value.
+
 
 ```{r}
 library("deSolve")
@@ -109,6 +109,14 @@ points(MPL_conc~time, data = data_high_dose)
 plot(as.data.frame(out)$DRN, type = "l", xlab = "Time in Hours", ylab = "DRN concentration", col = "blue")
 
 ```
+[2] How do the results of the simulations depend on the dose and concentration of the drug? Compare the model variables mRNA, R with the experimental data by running the simulations adjusting dosis D and plot these to find the answer.
+With both doses, we can see that the mRNA concentration follows the same trend as the model, it decreases and then increases again.
+However, it's notable that with at both dose levels the mRNA doesn't stabilise like the model, and it performs a yoyo-effect before the mRNA stabilises in an upwards climb.
+[3] Are the results of the model in line with experimental data? If not, what could be the reason? Think of at least one explanation. Try to test it with simulations (you will get bonus points for that, your explanation does not need to be correct, but should be logical).
+
+#TODO: Depending on what data is compared, it seems that the low dose
+
+
 # Assignment 2: simulate scenario’s
 You are going to check what happens if you change the model and model parameters and compare the results to the basic scenario (from week 2). Unless stated otherwise, in the simulations for the solutions to this part, the values of different parameters and initial conditions should be as in the table in the assignments document. Value of kd_Rm should be 0.612, value of ks_r=3.22, value of D=20*1000/374.471.
 
