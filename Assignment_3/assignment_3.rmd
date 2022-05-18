@@ -41,6 +41,18 @@ Grd_model <- function(t, y, parms){
 
 out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
 
-plot(out)
-lines(MPL_conc~time, data=dataset_low_dose)
+plot(as.data.frame(out)$Rmo, type = "line", xlab = "Time in Hours", ylab = "Rmo concentration", ylim =  c(0.5,5.0))
+lines(mRNA~time, data = dataset_low_dose, col = "red")
+
+
+plot(as.data.frame(out)$Ro, type = "line", xlab = "Time in Hours", ylab = "Ro concentration")
+lines(Free_receptor~time, data = dataset_low_dose, col = "red")
+
+plot(as.data.frame(out)$DR, type = "line", xlab = "Time in Hours", ylab = "DR concentration")
+
+
+plot(as.data.frame(out)$DRN, type = "line", xlab = "Time in Hours", ylab = "DRN concentration")
+
+
+
 ```
