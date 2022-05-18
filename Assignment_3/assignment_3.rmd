@@ -42,5 +42,5 @@ Grd_model <- function(t, y, parms){
 out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
 
 plot(out)
-lines(MPL_conc~time, data=data_smoll_dose)
+lines(MPL_conc~time, data=dataset_low_dose)
 ```
