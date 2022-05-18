@@ -15,10 +15,13 @@ medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],list(data$dose,
 names(medians)[1:2] <- c("dose","time")
 head(medians)
 
-dataset_low_dose <- subset(medians, dose == 0.1)
-dataset_high_dose <- subset(medians, dose == 0.3)
-head(dataset_low_dose)
-head(dataset_high_dose)
+data_low_dose <- subset(data, dose != 0.3)
+data_high_dose <- subset(data, dose != 0.1)
+
+median_low_dose <- subset(medians, dose != 0.3)
+median_high_dose <- subset(medians, dose != 0.1)
+head(median_low_dose)
+head(median_high_dose)
 ```
 ```{r}
 library("deSolve")
@@ -41,17 +44,20 @@ Grd_model <- function(t, y, parms){
 
 out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
 
-plot(as.data.frame(out)$Rmo, type = "line", xlab = "Time in Hours", ylab = "Rmo concentration", ylim =  c(0.5,5.0))
-lines(mRNA~time, data = dataset_low_dose, col = "red")
+plot(as.data.frame(out)$Rmo, type = "l", xlab = "Time in Hours", ylab = "Rmo concentration", ylim =  c(0.5,5.0))
+lines(mRNA~time, data = median_low_dose, col = "blue")
+points(mRNA~time, data = data_low_dose, col = "green")
 
 
-plot(as.data.frame(out)$Ro, type = "line", xlab = "Time in Hours", ylab = "Ro concentration")
-lines(Free_receptor~time, data = dataset_low_dose, col = "red")
+plot(as.data.frame(out)$Ro, type = "l", xlab = "Time in Hours", ylab = "Ro concentration")
+lines(Free_receptor~time, data = median_low_dose, col = "blue")
+points(Free_receptor~time, data = data_low_dose, col = "green")
 
-plot(as.data.frame(out)$DR, type = "line", xlab = "Time in Hours", ylab = "DR concentration")
+plot(as.data.frame(out)$DR, type = "l", xlab = "Time in Hours", ylab = "DR concentration")
+lines(MPL_conc~time, data = median_low_dose, col = "blue")
+points(MPL_conc~time, data = data_low_dose, col = "green")
 
-
-plot(as.data.frame(out)$DRN, type = "line", xlab = "Time in Hours", ylab = "DRN concentration")
+plot(as.data.frame(out)$DRN, type = "l", xlab = "Time in Hours", ylab = "DRN concentration")
 
 
 
