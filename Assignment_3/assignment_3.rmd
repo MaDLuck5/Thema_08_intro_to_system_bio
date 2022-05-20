@@ -160,6 +160,12 @@ Grd_model <- function(t, y, parms){
     R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
     DR.delta <- Kon * D * Ro - Kt * DR
     DRN.delta <- Kt * DR - Kre * DRN
+    print(DR.delta)
+    print(parms)
+    if (DR.delta < 0.1) {
+      D <<-  0
+      parameters <<- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = 0)
+    }
 
         return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta)))
        })
@@ -199,7 +205,7 @@ plot(out)
 [4] What would happen if the synthesis of the receptor was completely blocked? Which parameter needs to be put to zero? Adjust the parameter, run the simulations and plot the results.
 
 ```{r}
-D <- (20 * 1000)/374.471
+D <- 0
 parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
 state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
 times <- seq(0, 168,  by = 1)
