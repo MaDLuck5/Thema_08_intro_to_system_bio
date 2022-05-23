@@ -183,7 +183,7 @@ plot(out)
 D <- (20 * 1000)/374.471
 parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
 state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
-times <- seq(0, 168,  by = 1)
+times <- seq(0, 48,  by = 1)
 
 Grd_model <- function(t, y, parms){
   with(as.list(c(parms, y)),{
@@ -196,42 +196,65 @@ Grd_model <- function(t, y, parms){
        })
 }
 
+#  Standard Kon
+out <- ode(times = times, y = state, parms = parameters, func = Grd_model, method = "euler")
 
-out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+# Setting kon to 0.0329/5
+parameters["Kon"] <- 0.00329/5
+out2 <- ode(times = times, y = state, parms = parameters, func = Grd_model, method = "euler")
 
-plot(out)
+# setting Kon to 0.0329/2
+parameters["Kon"] <- 0.00329/2
+out3 <- ode(times = times, y = state, parms = parameters, func = Grd_model, method = "euler")
+
+# setting Kon to 0.0329*2
+parameters["Kon"] <- 0.00329*2
+out4 <- ode(times = times, y = state, parms = parameters, func = Grd_model, method = "euler")
+
+# setting Kon to 0.0329*5
+parameters["Kon"] <- 0.00329*5
+out5 <- ode(times = times, y = state, parms = parameters, func = Grd_model, method = "euler")
+
+# Plotting everything Kon related
+plot(out, out2, out3, out4, out5)
+legend("topright", lty = 1:5, col = 1:5, legend = c("standard", "/5", "/2", "*2", "*5"), title= "Kon changes")
+
+
+# Resetting Kon to default value and running standard kre
+parameters["Kon"] <- 0.00329
+out <- ode(times = times, y = state, parms = parameters, func = Grd_model, method = "euler")
+
+# setting kre to 0.57/5
+parameters["Kre"] <- 0.57/5
+out2 <- ode(times = times, y = state, parms = parameters, func = Grd_model, method = "euler")
+
+# setting kre to 0.57/2
+parameters["Kre"] <- 0.57/2
+out3 <- ode(times = times, y = state, parms = parameters, func = Grd_model, method = "euler")
+
+# setting kre to 0.57*2
+parameters["Kre"] <- 0.57*2
+out4 <- ode(times = times, y = state, parms = parameters, func = Grd_model, method = "euler")
+
+# setting kre to 0.57*5
+parameters["Kre"] <- 0.57*5
+out5 <- ode(times = times, y = state, parms = parameters, func = Grd_model, method = "euler")
+
+# Plotting everything Kre related
+plot(out, out2, out3, out4)
+legend("topright", lty = 1:4, col = 1:4, legend = c("standard", "/5", "/2", "*2"), title= "Kre changes")
+
+# plotted this scenario sepertately due to the value difference, it would ruin the plots
+plot(out5)
+legend("topright", legend = "*5", title = "Kre changes")
 ```
+
+
+
 
 [4] What would happen if the synthesis of the receptor was completely blocked? Which parameter needs to be put to zero? Adjust the parameter, run the simulations and plot the results.
 
-```{r}
-D <- 0
-parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
-state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
-times <- seq(0, 168,  by = 1)
-
-Grd_model <- function(t, y, parms){
-  with(as.list(c(parms, y)),{
-    Rmo.delta <- Ks_rm * (1-(DRN / (ic50_rm + DRN)))- Kd_Rm * Rmo
-    R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
-    DR.delta <- Kon * D * Ro - Kt * DR
-    DRN.delta <- Kt * DR - Kre * DRN
-
-        return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta)))
-       })
-}
-
-
-out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
-
-plot(out)
-```
-
-[5] What is the dynamic of the system when the baseline rate of production of mRNA of the receptor is increased or decreased 2 or 5 fold (recalculate the rate of mRNA degradation so that the steady-state assumption at baseline (without the drug) is still valid, i.e. mRNA levels are constant when there is not drug)? Mind you: ks_Rm values should be changed, but we know that if without the drug the system is at steady-state then kd_Rm = ks_Rm/Rm0. Therefore if we change ks_Rm we need to change kd_Rm as well. Also after we recalculate the value of kd_Rm for the baseline conditions, the simulations should be run with drug present. Simulations should be run for 4 different scenarios:
-ks_Rm = 2.9/5 and kd_Rm=2.9/5/4.74
-ks_Rm = 2.9/2 and kd_Rm=2.9/2/4.74
-ks_Rm = 2.9*2 and kd_Rm=2.9*2/4.74
-ks_Rm = 2.9*5 and kd_Rm=2.9*5/4.74
+Ks_rm needs to be set to zero, as this is the constant for mRNA synthesis.
 
 ```{r}
 D <- (20 * 1000)/374.471
@@ -250,8 +273,67 @@ Grd_model <- function(t, y, parms){
        })
 }
 
-
+# standard plot
 out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
 
-plot(out)
+# setting mRNA synthesis to 0 (ks_Rm)
+parameters["Ks_rm"] <- 0
+out2 <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+plot(out, out2)
+legend("topright", lty = 1:2, col = 1:2, legend = c("standard", "no synthesis"), title = "mRNA synthesis")
+```
+
+[5] What is the dynamic of the system when the baseline rate of production of mRNA of the receptor is increased or decreased 2 or 5 fold (recalculate the rate of mRNA degradation so that the steady-state assumption at baseline (without the drug) is still valid, i.e. mRNA levels are constant when there is not drug)? Mind you: ks_Rm values should be changed, but we know that if without the drug the system is at steady-state then kd_Rm = ks_Rm/Rm0. Therefore if we change ks_Rm we need to change kd_Rm as well. Also after we recalculate the value of kd_Rm for the baseline conditions, the simulations should be run with drug present. Simulations should be run for 4 different scenarios:
+ks_Rm = 2.9/5 and kd_Rm=2.9/5/4.74
+ks_Rm = 2.9/2 and kd_Rm=2.9/2/4.74
+ks_Rm = 2.9*2 and kd_Rm=2.9*2/4.74
+ks_Rm = 2.9*5 and kd_Rm=2.9*5/4.74
+
+```{r}
+D <- (20 * 1000)/374.471
+parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
+state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
+times <- seq(0, 48,  by = 1)
+
+Grd_model <- function(t, y, parms){
+  with(as.list(c(parms, y)),{
+    Rmo.delta <- Ks_rm * (1-(DRN / (ic50_rm + DRN)))- Kd_Rm * Rmo
+    R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
+    DR.delta <- Kon * D * Ro - Kt * DR
+    DRN.delta <- Kt * DR - Kre * DRN
+
+        return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta)))
+       })
+}
+
+# standard scenario
+out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+# rate of production divided by 5
+parameters["Ks_rm"] <- 2.9/5
+parameters["Kd_Rm"] <- parameters["Ks_rm"]/4.74
+out2 <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+# rate of production divided by 2
+parameters["Ks_rm"] <- 2.9/2
+parameters["Kd_Rm"] <- parameters["Ks_rm"]/4.74
+out3 <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+# rate of production multiplied by 2
+parameters["Ks_rm"] <- 2.9*2
+parameters["Kd_Rm"] <- parameters["Ks_rm"]/4.74
+out4 <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+# rate of production multiplied by 5
+parameters["Ks_rm"] <- 2.9*5
+parameters["Kd_Rm"] <- parameters["Ks_rm"]/4.74
+out5 <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+
+plot(out, out2, out3, out4)
+legend("topright", lty = 1:4, col = 1:4, legend = c("Standard", "/5", "/2", "*2"), title = "mRNA production")
+
+# plotted this scenario sepertately due to the value difference, it would ruin the plots
+plot(out5)
+legend("topright", legend = "*5", title = "mRNA production")
 ```
