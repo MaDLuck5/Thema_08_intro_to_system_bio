@@ -1,20 +1,33 @@
 ---
 title: Assignment 3
-output: html_notebook
+output: pdf_document
+date: 23-05-2022
 ---
-```{r}
 
-data <- read.csv("Assignment_3/Data/MPL.csv", na.strings = "NA")
+```{r setup, include=FALSE}
+library("deSolve")
+# get the working directory
+working_directory <- getwd()
+# get the directory for the data_file
+data_file <- paste(working_directory, "/Assignment_3/Data/MPL.csv", sep = "")
+```
+```{r reading_file}
+
+# read the data file
+data <- read.csv(file = data_file, na.strings =  "NA")
+# Extract the median for the low dose
 median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
 median_MPL_01
-
+# Extract the median for the high dose
 median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm=T)
 median_MPL_03
 
+# Generate the medians for the MPL concentration, mRNA & Free receptor
 medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],list(data$dose,data$time), median, na.rm=T)
 names(medians)[1:2] <- c("dose","time")
 head(medians)
 
+# Subset the datasets so the low/high dose are seperated
 data_low_dose <- subset(data, dose != 0.3)
 data_high_dose <- subset(data, dose != 0.1)
 
@@ -44,17 +57,19 @@ An example of a the mRNA plot with the model(black line), the experiment(datapoi
 
 ## Questions:
 [1] Why is it best practice to plot the median for the experimental data? Explain in your report
+
 The reason why it's best to plot with the median is that it gives a representation of the central value.
 
 
-```{r}
-library("deSolve")
+```{r assignment1_question01}
 
+# Set the parameters, state and times for the low dose ode model
 D <- (median_MPL_01 * 1000)/374.471
 parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
 state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
 times <- seq(0, 168,  by = 1)
 
+# Define the model function for the ode model
 Grd_model <- function(t, y, parms){
   with(as.list(c(parms, y)),{
     Rmo.delta <- Ks_rm * (1-(DRN / (ic50_rm + DRN)))- Kd_Rm * Rmo
@@ -66,46 +81,61 @@ Grd_model <- function(t, y, parms){
        })
 }
 
-
+# Run the ode model and save the output to the out variable
 out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
 
+# Plot the graph for mRNA with the model data
 plot(as.data.frame(out)$Rmo, type = "l", xlab = "Time in Hours", ylab = "Rmo concentration", ylim =  c(0.5,5.0), col = "blue")
+# Plot the median of the experimental data-set as a line and the full experimental data-set as points
 lines(mRNA~time, data = median_low_dose, col = "red")
 points(mRNA~time, data = data_low_dose)
 
-
+# Plot the graph for free receptor with the model data
 plot(as.data.frame(out)$Ro, type = "l", xlab = "Time in Hours", ylab = "Ro concentration", col = "blue")
+# Plot the median of the experimental data-set as a line and the full experimental data-set as points
 lines(Free_receptor~time, data = median_low_dose, col = "red")
 points(Free_receptor~time, data = data_low_dose)
 
+# Plot the graph for MPL_complex with the model data
 plot(as.data.frame(out)$DR, type = "l", xlab = "Time in Hours", ylab = "DR concentration", col = "blue")
+# Plot the median of the experimental data-set as a line and the full experimental data-set as points
 lines(MPL_conc~time, data = median_low_dose, col = "red")
 points(MPL_conc~time, data = data_low_dose)
 
+# Plot the graph for MPL_complex in nucleus with the model data
 plot(as.data.frame(out)$DRN, type = "l", xlab = "Time in Hours", ylab = "DRN concentration", col = "blue")
 
 
 
 ```
 ```{r}
+# Set the parameters for the high-dose ode model
 D <- (median_MPL_03 * 1000)/374.471
 parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
 
+# Run the ode model and save the output to the out variable
 out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
 
+# Plot the graph for mRNA with the model data
 plot(as.data.frame(out)$Rmo, type = "l", xlab = "Time in Hours", ylab = "Rmo concentration", ylim =  c(0.5,5.0), col = "blue")
+# Plot the median of the experimental data-set as a line and the full experimental data-set as points
 lines(mRNA~time, data = median_high_dose, col = "red")
 points(mRNA~time, data = data_high_dose)
 
-
+# Plot the graph for free receptor with the model data
 plot(as.data.frame(out)$Ro, type = "l", xlab = "Time in Hours", ylab = "Ro concentration", col = "blue")
+# Plot the median of the experimental data-set as a line and the full experimental data-set as points
 lines(Free_receptor~time, data = median_high_dose, col = "red")
 points(Free_receptor~time, data = data_high_dose)
 
+# Plot the graph for MPL_complex with the model data
+
 plot(as.data.frame(out)$DR, type = "l", xlab = "Time in Hours", ylab = "DR concentration", col = "blue")
+# Plot the median of the experimental data-set as a line and the full experimental data-set as points
 lines(MPL_conc~time, data = median_high_dose, col = "red")
 points(MPL_conc~time, data = data_high_dose)
 
+# Plot the graph for MPL_complex in nucleus with the model data
 plot(as.data.frame(out)$DRN, type = "l", xlab = "Time in Hours", ylab = "DRN concentration", col = "blue")
 
 ```
