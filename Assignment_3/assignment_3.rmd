@@ -149,10 +149,11 @@ plot(out)
 [2] What is the time course of receptor and mRNA concentrations when the drug treatment is stopped? So After the steady state is reached (at time t_steady), D should be set to zero and the simulation should continue from time t_steady till the new steady state is reached (t_steady_second). Run the simulations and plot the results from t = 0 till t_steady_second.
 
 ```{r}
+# parameters
 D <- (20 * 1000)/374.471
-parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = D)
-state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0)
-times <- seq(0, 168,  by = 1)
+parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22)
+state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0, D = D)
+times <- seq(0, 200,  by = 1)
 
 Grd_model <- function(t, y, parms){
   with(as.list(c(parms, y)),{
@@ -160,19 +161,22 @@ Grd_model <- function(t, y, parms){
     R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
     DR.delta <- Kon * D * Ro - Kt * DR
     DRN.delta <- Kt * DR - Kre * DRN
-    print(DR.delta)
-    print(parms)
-    if (DR.delta < 0.1) {
-      D <<-  0
-      parameters <<- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22, D = 0)
-    }
-
-        return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta)))
+    D.delta <- 0
+    nummer1 <<- R.delta
+    nummer1.delta <- 0
+    return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta, D.delta)))
        })
 }
 
+event_1 <- function(t, y, parms){
+  y["D"] <- 0
+  return(y)
+}
+# steady ste point change D to 0 when Ro hits 60.6490...
+root <- function(t, y, parms) y["Ro"] - 60.6490
 
-out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, method = "euler")
+out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, rootfun = root,
+           events = list(func = event_1, root = TRUE))
 
 plot(out)
 ```
