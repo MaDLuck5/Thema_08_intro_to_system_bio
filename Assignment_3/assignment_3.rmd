@@ -10,6 +10,7 @@ library("deSolve")
 # get the working directory
 working_directory <- getwd()
 # get the directory for the data_file
+data_file_bugfix <- paste(working_directory, "/Assignment_3/Data/MPL.csv", sep = "")
 data_file <- "C:\\Users\\matsp\\Documents\\Bio-informatic jaar 2\\Thema-08\\Thema_08_intro_to_system_bio\\Thema_08_intro_to_system_bio\\Assignment_3\\Data\\MPL.csv"
 
 ```
@@ -17,24 +18,10 @@ data_file <- "C:\\Users\\matsp\\Documents\\Bio-informatic jaar 2\\Thema-08\\Them
 # Assignment 1: assess model validity
 You have to compare the data from the experiment with the simulation data, to assess the model validity. The best way to do this is plotting the model results and the experimental results in one graph. The model results have one value per time unit, the experimental results have multiple values per time unit. Either plot all data points of the experimental data using a scatterplot or calculate the median results for each time unit and plot a line of these median points. You can do this for instance with the function aggregate.
 
-### Does this need to be removed?
-medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],list(data$dose,data$time), median, na.rm=T)
-names(medians)[1:2] <- c("dose","time")
-head(medians)
-   dose time MPL_conc   mRNA Free_receptor
- 1  0.0    0    0.000 3.7900        292.95
- 2  0.1    6   11.180 1.7025        124.70
- 3  0.3    6   31.295 1.7295         97.90
- 4  0.1   10   12.335 1.7515        157.80
- 5  0.3   10   36.960 1.4140         69.55
- 6  0.1   13   11.945 1.7045        152.50
-The results of the entire experiment can be found in MPL.csv, the results of the model is to be calculated with the model you programmed in the previous assignment. Make sure you calculate the right dosis concentration parameter (D) for the model corresponding with the dosis 0.1 and 0.3.
-
-An example of an mRNA plot with the model(black line), the experiment(datapoints) and the median of the experimental data(red line) you find below (this is just an example, parameter values might be different!)
 ```{r reading_file}
 
 # read the data file (if the wrapper doesn't work: put this as file: "./Data/MPL.csv"
-data <- read.csv(file = data_file, na.strings =  "NA",)
+data <- read.csv(file = data_file_bugfix, na.strings =  "NA",)
 # Extract the median for the low dose
 median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
 median_MPL_01
@@ -162,6 +149,12 @@ You are going to check what happens if you change the model and model parameters
 ## Questions:
 [1] What would be the time course concentration of the activated drug-receptor complex if there was no auto-regulation of glucocorticoid receptor, i.e. if there was not effect of drug on the synthesis of the receptor mRNA? What formula needs to be changed? Adjust the model, run the simulation and plot the results to find out.
 
+Autoregulation means that the cell itself does not regulate the amount of the glucocoritcoid recepter.
+In our belief it is then that the influence of 'activated MPL complexes in the nucleus' (DRN) should not impede the production of the mRNA, as this would be a negative feedback loop and cause the mRNA to reduce the more DRN is active.
+To see what would happen to the concentration if there was no auto-regulation of the glucocorticoid receptor, we have rewritten the Rmo.delte formula from: Ks_rm * (1 - (DRN / (ic50_rm + DRN))) - Kd_Rm * Rmo
+To: Ks_rm * (1-ic50_rm) - Kd_Rm * Rmo
+
+
 ```{r}
 # Set the parameters, state and times for the ode-model
 D <- (20 * 1000)/374.471
@@ -172,7 +165,7 @@ times <- seq(0, 168,  by = 1)
 # Define the model function for the ode model
 Grd_model <- function(t, y, parms){
   with(as.list(c(parms, y)),{
-    Rmo.delta <- Ks_rm * (1-(DRN / (ic50_rm + DRN)))- Kd_Rm * Rmo
+    Rmo.delta <- Ks_rm * (1- ic50_rm)- Kd_Rm * Rmo
     R.delta <- Ks_r *  Rmo + Rf * Kre * DRN - Kon * D * Ro - Kd_R * Ro
     DR.delta <- Kon * D * Ro - Kt * DR
     DRN.delta <- Kt * DR - Kre * DRN
