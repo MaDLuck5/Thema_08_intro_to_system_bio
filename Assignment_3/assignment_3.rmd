@@ -189,7 +189,7 @@ plot(out)
 D <- (20 * 1000)/374.471
 parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.57, Rf = 0.49, Kd_R = 0.0572, Kd_Rm = 0.612, Ks_r = 3.22)
 state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0, D = D)
-times <- seq(0, 200,  by = 1)
+times <- seq(0, 400,  by = 1)
 
 # Define the model function for the ode model
 Grd_model <- function(t, y, parms){
@@ -204,19 +204,22 @@ Grd_model <- function(t, y, parms){
 }
 
 event_1 <- function(t, y, parms){
-  y["D"] <- 0
+  y["D"] <-  0
   return(y)
 }
 
 # checks when all states' delta are absolute and below 1e-4
 root <- function(t, y, parms) {
   x <- unlist(Grd_model(t, y, parms))
-  return(sum(abs(x)) - 1e-4)
+  number <- sum(abs(x)) - 1e-4
+  number2 <- number + y["D"]
+
+  return(c(number, number2))
 }
 
 # Run the ode model and save the output to the out variable
 out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, rootfun = root,
-           events = list(func = event_1, root = TRUE))
+           events = list(func = event_1, root = TRUE, terminalroot = 2))
 
 # plot the graph with the data from the ode model
 plot(out)
