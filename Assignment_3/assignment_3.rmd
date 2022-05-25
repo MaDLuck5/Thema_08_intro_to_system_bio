@@ -1,7 +1,7 @@
 ---
 title: Assignment 3
 author: Mats Slik & Dennis Haandrikman
-date: 23-05-2022
+date: 25-05-2022
 output: pdf_document
 ---
 
@@ -10,7 +10,8 @@ library("deSolve")
 # get the working directory
 working_directory <- getwd()
 # get the directory for the data_file
-data_file <- paste(working_directory, "/Assignment_3/Data/MPL.csv", sep = "")
+data_file <- "C:\\Users\\matsp\\Documents\\Bio-informatic jaar 2\\Thema-08\\Thema_08_intro_to_system_bio\\Thema_08_intro_to_system_bio\\Assignment_3\\Data\\MPL.csv"
+
 ```
 
 # Assignment 1: assess model validity
@@ -33,7 +34,7 @@ An example of an mRNA plot with the model(black line), the experiment(datapoints
 ```{r reading_file}
 
 # read the data file (if the wrapper doesn't work: put this as file: "./Data/MPL.csv"
-data <- read.csv(file = data_file, na.strings =  "NA")
+data <- read.csv(file = data_file, na.strings =  "NA",)
 # Extract the median for the low dose
 median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
 median_MPL_01

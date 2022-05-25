@@ -1,3 +1,9 @@
+---
+title: Assignment 1
+author: Mats Slik & Dennis Haandrikman
+date: 25-05-2022
+output: pdf_document
+---
 # Week 1: mRNA dynamic
 
 De vorige les hebben we gewerkt met de afgeleide functie: dVolume / dt = a - p * (Volume + a). We hebben gezien dat hoewel a (hoeveelheid toegevoegd volume 10) en p (percentage 0.1) constant zijn de toename in volume (dVolume) per tijdstip verschilt. Op een gegeven moment bereikt deze toename zelfs een evenwichtstoestand. Het volume neemt niet meer toe, de toename dVolume = 0. We noemen dVolume/dt de afgeleide functie (de functie die de verandering per tijdseenheid beschrijft).
