@@ -221,8 +221,12 @@ root <- function(t, y, parms) {
 out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, rootfun = root,
            events = list(func = event_1, root = TRUE, terminalroot = 2))
 
+last_root_time <- tail(attributes(out)$troot, n=1)
+times_basic <- seq(0, round(last_root_time),  by = 1)
+
+out_basic <- ode(times = times_basic, y = state,   parms = parameters, func = Grd_model)
 # plot the graph with the data from the ode model
-plot(out)
+plot(out,out_basic)
 ```
 
 
