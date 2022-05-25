@@ -198,8 +198,6 @@ parameters <- c(Ks_rm = 2.90, ic50_rm = 26.2, Kon = 0.00329, Kt = 0.63, Kre = 0.
 state <- c(Rmo = 4.74, Ro = 267, DR = 0, DRN = 0, D = D)
 times <- seq(0, 200,  by = 1)
 
-nummer1 <- 0
-
 # Define the model function for the ode model
 Grd_model <- function(t, y, parms){
   with(as.list(c(parms, y)),{
@@ -208,10 +206,6 @@ Grd_model <- function(t, y, parms){
     DR.delta <- Kon * D * Ro - Kt * DR
     DRN.delta <- Kt * DR - Kre * DRN
     D.delta <- 0
-
-    nummer1 <<- R.delta
-
-
     return(list(c(Rmo.delta, R.delta, DR.delta, DRN.delta, D.delta)))
        })
 }
@@ -220,8 +214,12 @@ event_1 <- function(t, y, parms){
   y["D"] <- 0
   return(y)
 }
-# steady ste point change D to 0 when Ro hits 60.6490...
-root <- function(t, y, parms) nummer1
+
+# checks when all states' delta are absolute and below 1e-4
+root <- function(t, y, parms) {
+  x <- unlist(Grd_model(t, y, parms))
+  return(sum(abs(x)) - 1e-4)
+}
 
 # Run the ode model and save the output to the out variable
 out <- ode(times = times, y = state,   parms = parameters, func = Grd_model, rootfun = root,
