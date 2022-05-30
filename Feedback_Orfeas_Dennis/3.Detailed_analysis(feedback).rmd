@@ -25,6 +25,8 @@ D03 = median_MPL_03 * 1000 / 374.471
 
 ```
 
+> Please make sure to declare variables with the same method, D01 and D03 should also be assigned with an <- instead of an =.
+
 # Assignment 1
 
 ```{r}
@@ -259,7 +261,7 @@ plot(out, xlab = "Time in hours", ylab = c("Rm (fmol/g liver)", "R (fmol/mg prot
 
 As you can see in the figure above, both Rm and R increase and stabilise at a higher level, while DR and DRN do the exact opposite. When we remove our reactant D, DR decreases since it can't be synthesised anymore. The same is true for DRN since it needs DR to form. Now that there is less DRN present in the system, Rm production isn't inhibited any longer. Therefore, it's concentration will increase and balance out at a new, higher equilibrium. The concentration of R will follow a similar pattern since Rm is now present at a higher concentration, and there is no more D available to bind to R.
 
->how do u know that steady state one always hits on T=30 and it seems like the implimentation of D = 0 doesnt fully work with a ifelse statement inside the model fucntion, have u looked at the event and root parameters u can give to the ODE fucntion ? also your model doesnt stop when the second steady state with D = 0 is hit .
+>How do you know that steady state one always hits on T=30 and it seems like the implimentation of D = 0 doesn't fully work with a ifelse statement inside the model fucntion, have u looked at the event and root parameters u can give to the ODE function? Also your model doesn't stop when the second steady state with D = 0 is hit.
 
 ## Question 3
 
@@ -307,7 +309,7 @@ Chaning the k.on values results in different slopes. The lower the value the slo
 
 The same change can be observed for the different K.re values, but these seem to drop off and then reach the same equilibrium, instead of starting at the lower point.
 
-> try plotting all the lines in one graph, they are very hard to read and compare right now 
+> Try plotting all the lines in one graph, they are very hard to read and compare right now
 
 ## Question 4
 To completely block the synthesis of receptors, k.s_r would have to put to 0, because then the synthesis of the receptors would completely stop.
@@ -343,3 +345,4 @@ for (val in ks_Rm.var){
 By changing the production rates of mRNA together with the degradation rates, different observations are made. The lower the values, the slower it takes for DR to form. The higher the values, the faster the mRNA accumulates and makes the other processes hit the equilibrium. By adjusting the degradation rate too, the total Rm won't increase indefinetly.
 
 > try plotting all the lines in one graph, they are very hard to read and compare right now, (again)
+> Also, double check when using = or proper declaration of variables R.
