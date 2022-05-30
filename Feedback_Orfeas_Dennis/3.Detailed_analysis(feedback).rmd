@@ -1,0 +1,345 @@
+---
+title: "3.Detailed_analysis"
+author: "Dennis Wiersma"
+date: '2022-05-16'
+output:
+pdf_document:
+highlight: kate
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(deSolve)
+```
+
+# Comparing simulation data with experimental data for two dosis
+
+```{r}
+data <- read.csv("MPL.csv", na.strings = "NA")
+
+median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
+median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm=T)
+
+D01 = median_MPL_01 * 1000 / 374.471
+D03 = median_MPL_03 * 1000 / 374.471
+
+```
+
+# Assignment 1
+
+```{r}
+parameters <- c(
+  k.s_Rm = 2.90,
+  IC.50_Rm = 26.2,
+  k.on = 0.00329,
+  k.T = 0.63,
+  k.re = 0.57,
+  Rf = 0.49,
+  k.d_R = 0.0572,
+  k.d_Rm = 0.612,
+  k.s_r = 3.22,
+  D = 0
+)
+
+state <- c(
+  R.m0 = 4.74,
+  R.0 = 267,
+  DR = 0,
+  DRN = 0
+)
+
+# glucocorticoid receptor dynamics
+GRD <- function(t, state, parameters){
+  with(as.list(c(state, parameters)),{
+
+    dR.m <- k.s_Rm * (1 - DRN / (IC.50_Rm + DRN) - k.d_Rm * R.m0)
+
+    dR <- k.s_r * R.m0 + Rf * k.re * DRN - k.on * D * R.0 - k.d_R * R.0
+
+    dDR <- k.on * D * R.0 - k.T * DR
+
+    dDRN <- k.T * DR - k.re * DRN
+
+    return(list(c(dR.m, dR, dDR, dDRN)))
+  }
+  )
+}
+
+# Duration of 7 days, defined in hours
+times <- seq(0, 168)
+
+# Median values of experimental data per time value
+medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],
+                     list(data$dose,data$time), median, na.rm=T)
+names(medians)[1:2] <- c("dose","time")
+
+# Sets parameter D to value for 0.1 mg drug/kg rat/h value
+parameters["D"] = D01
+# Performs the modelling function
+out01 <- ode(y = state, times = times, func = GRD, parms = parameters)
+
+# Sets parameter D to value for 0.3 mg drug/kg rat/h value
+parameters["D"] = D03
+# Performs the modelling function
+out03 <- ode(y = state, times = times, func = GRD, parms = parameters)
+
+par(mfrow = c(2,2))
+# Plots a scatter plot with experimental data for Rm where dose == 0.1 mg drug/kg rat/h
+plot(data$mRNA ~ data$time,
+     main = "Rm (0.1 mg drug/kg rat/h)",
+     ylab = "Rm (fmol/g liver)",
+     xlab = "Time")
+# Adds the model for Rm as a black line
+lines(out01[,2])
+# Adds medians of the experimental data for Rm as a red line
+lines(medians[medians["dose"] == 0.1,]$mRNA ~ medians[medians["dose"] == 0.1,]$time,
+      col = "red")
+
+# Plots a scatter plot with experimental data for R where dose == 0.1 mg drug/kg rat/h
+plot(data$Free_receptor ~ data$time,
+     main = "R (0.1 mg drug/kg rat/h)",
+     ylab = "R (fmol/mg protein)",
+     xlab = "Time")
+# Adds the model for R as a black line
+lines(out01[,3])
+# Adds medians of the experimental data for R as a red line
+lines(medians[medians["dose"] == 0.1,]$Free_receptor ~ medians[medians["dose"] == 0.1,]$time,
+      col = "red")
+
+# Plots a scatter plot with experimental data for Rm where dose == 0.3 mg drug/kg rat/h
+plot(data$mRNA ~ data$time,
+     main = "Rm (0.3 mg drug/kg rat/h)",
+     ylab = "Rm (fmol/g liver)",
+     xlab = "Time")
+# Adds the model for Rm as a black line
+lines(out03[,2])
+# Adds medians of the experimental data for Rm as a red line
+lines(medians[medians["dose"] == 0.3,]$mRNA ~ medians[medians["dose"] == 0.3,]$time,
+      col = "red")
+
+# Plots a scatter plot with experimental for R data where dose == 0.3 mg drug/kg rat/h
+plot(data$Free_receptor ~ data$time,
+     main = "R (0.3 mg drug/kg rat/h)",
+     ylab = "R (fmol/mg protein)",
+     xlab = "Time")
+# Adds the model for R as a black line
+lines(out03[,3])
+# Adds medians of the experimental data for R as a red line
+lines(medians[medians["dose"] == 0.3,]$Free_receptor ~ medians[medians["dose"] == 0.3,]$time,
+      col = "red")
+
+```
+
+## Questions
+1: To determine whether the experimental data aligns with the model that has been made. This could show whether the model which has been made is applicable to practical experimental results, and whether or not it can be used to predict future results.
+
+2: The amount of receptors (R) as a function of time is very dependent on the value of D. The more D is present in the system, the faster the receptors get saturated. The R values drop significantly faster as a result when increasing the dose of D.
+
+The Rm (mRNA) values are way less responsive to a significant change in the D value. It hits equilibrium around the same time.
+
+3: They're not very in line, because there's not enough experimental data to construct a reliable model. For example, at each moment of assessment only 5 measurements have been taken. Had there been more, then they would've overlapped more consistently.
+
+# Assignment 2
+
+```{r}
+library(deSolve)
+
+MPL.ngml <- 20
+
+parameters <- c(
+  k.s_Rm = 2.90,
+  IC.50_Rm = 26.2,
+  k.on = 0.00329,
+  k.T = 0.63,
+  k.re = 0.57,
+  Rf = 0.49,
+  k.d_R = 0.0572,
+  k.d_Rm = 0.612,
+  k.s_r = 3.22,
+  D = MPL.ngml * 1000 * 1 / 374.477
+)
+
+state <- c(
+  R.m0 = 4.74,
+  R.0 = 267,
+  DR = 0,
+  DRN = 0
+)
+
+```
+
+## Question 1
+
+If we want to remove the influence DRN has on R.m, we'll have to remove DRN from the formula which calculates dR.m. Doing this removes the negative feedback loop which would otherwise decrease mRNA synthesis. This yields a higher point of equilibrium for the activated drug-receptor complex. You can see this happen in the graphs below.
+
+```{r}
+# glucocorticoid receptor dynamics
+GRD <- function(t, state, parameters){
+  with(as.list(c(state, parameters)),{
+
+    # Removed DRN's influence on R.m
+    dR.m <- k.s_Rm * (IC.50_Rm - k.d_Rm * R.m0)
+
+    dR <- k.s_r * R.m0 + Rf * k.re * DRN - k.on * D * R.0 - k.d_R * R.0
+
+    dDR <- k.on * D * R.0 - k.T * DR
+
+    dDRN <- k.T * DR - k.re * DRN
+
+    return(list(c(dR.m, dR, dDR, dDRN)))
+  }
+  )
+}
+
+# Duration of 2 days, defined in hours
+times <- seq(0, 48)
+
+out <- ode(y = state, times = times, func = GRD, parms = parameters)
+
+plot(out, xlab = "Time in hours", ylab = c("Rm (fmol/g liver)", "R (fmol/mg protein)",
+                                           "DR (fmol/mg protein)", "DR (fmol/mg protein)"),
+     main = c("Rm", "R", "DR", "DR (Nucleus)"))
+```
+
+## Question 2
+
+```{r}
+MPL.ngml <- 20
+
+parameters <- c(
+  k.s_Rm = 2.90,
+  IC.50_Rm = 26.2,
+  k.on = 0.00329,
+  k.T = 0.63,
+  k.re = 0.57,
+  Rf = 0.49,
+  k.d_R = 0.0572,
+  k.d_Rm = 0.612,
+  k.s_r = 3.22,
+  D = MPL.ngml * 1000 * 1 / 374.477
+)
+
+state <- c(
+  R.m0 = 4.74,
+  R.0 = 267,
+  DR = 0,
+  DRN = 0
+)
+
+# glucocorticoid receptor dynamics
+GRD <- function(t, state, parameters){
+
+  with(as.list(c(state, parameters)),{
+
+    D <- ifelse(t > 30, 0, D)
+
+    dR.m <- k.s_Rm * (1 - DRN / (IC.50_Rm + DRN) - k.d_Rm * R.m0)
+
+    dR <- k.s_r * R.m0 + Rf * k.re * DRN - k.on * D * R.0 - k.d_R * R.0
+
+    dDR <- k.on * D * R.0 - k.T * DR
+
+    dDRN <- k.T * DR - k.re * DRN
+    print(D)
+    return(list(c(dR.m, dR, dDR, dDRN)))
+  }
+  )
+}
+
+# Duration of 2 days, defined in hours
+times <- seq(0, 48)
+
+out <- ode(y = state, times = times, func = GRD, parms = parameters)
+
+plot(out, xlab = "Time in hours", ylab = c("Rm (fmol/g liver)", "R (fmol/mg protein)",
+                                           "DR (fmol/mg protein)", "DR (fmol/mg protein)"),
+     main = c("Rm", "R", "DR", "DR (Nucleus)"))
+
+```
+
+As you can see in the figure above, both Rm and R increase and stabilise at a higher level, while DR and DRN do the exact opposite. When we remove our reactant D, DR decreases since it can't be synthesised anymore. The same is true for DRN since it needs DR to form. Now that there is less DRN present in the system, Rm production isn't inhibited any longer. Therefore, it's concentration will increase and balance out at a new, higher equilibrium. The concentration of R will follow a similar pattern since Rm is now present at a higher concentration, and there is no more D available to bind to R.
+
+>how do u know that steady state one always hits on T=30 and it seems like the implimentation of D = 0 doesnt fully work with a ifelse statement inside the model fucntion, have u looked at the event and root parameters u can give to the ODE fucntion ? also your model doesnt stop when the second steady state with D = 0 is hit .
+
+## Question 3
+
+```{r}
+GRD <- function(t, state, parameters){
+  with(as.list(c(state, parameters)),{
+
+    # Removed DRN's influence on R.m
+    dR.m <- k.s_Rm * (IC.50_Rm - k.d_Rm * R.m0)
+
+    dR <- k.s_r * R.m0 + Rf * k.re * DRN - k.on * D * R.0 - k.d_R * R.0
+
+    dDR <- k.on * D * R.0 - k.T * DR
+
+    dDRN <- k.T * DR - k.re * DRN
+
+    return(list(c(dR.m, dR, dDR, dDRN)))
+  }
+  )
+}
+
+k.on_var <- c(0.00329/5, 0.00329/2, 0.00329*2, 0.00329*5)
+k.re_var <- c(0.57/5, 0.57/2, 0.57*2, 0.57*5)
+
+for (val in k.on_var){
+  parameters["k.on"] = val
+  out <- ode(y = state, times = times, func = GRD, parms = parameters)
+  plot(out, xlab = "Time in hours", ylab = c("Rm (fmol/g liver)", "R (fmol/mg protein)",
+                                             "DR (fmol/mg protein)", "DR (fmol/mg protein)"),
+       main = c("Rm", "R", "DR", "DR (Nucleus)"))
+  parameters["k.on"] = 0.00329
+}
+
+for (val in k.re_var){
+  parameters["k.re"] = val
+  out <- ode(y = state, times = times, func = GRD, parms = parameters)
+  plot(out, xlab = "Time in hours", ylab = c("Rm (fmol/g liver)", "R (fmol/mg protein)",
+                                             "DR (fmol/mg protein)", "DR (fmol/mg protein)"),
+       main = c("Rm", "R", "DR", "DR (Nucleus)"))
+  parameters["k.re"] = 0.57
+}
+```
+
+Chaning the k.on values results in different slopes. The lower the value the slower R reaches its peak and equilibrium, compared to the default value. This goes for all but Rm in the plots. This can be explained because the total amount of mRNA would not be affected by the rates.
+
+The same change can be observed for the different K.re values, but these seem to drop off and then reach the same equilibrium, instead of starting at the lower point.
+
+> try plotting all the lines in one graph, they are very hard to read and compare right now 
+
+## Question 4
+To completely block the synthesis of receptors, k.s_r would have to put to 0, because then the synthesis of the receptors would completely stop.
+
+```{r}
+parameters["k.s_r"] = 0
+out <- ode(y = state, times = times, func = GRD, parms = parameters)
+
+plot(out, xlab = "Time in hours", ylab = c("Rm (fmol/g liver)", "R (fmol/mg protein)",
+                                           "DR (fmol/mg protein)", "DR (fmol/mg protein)"),
+     main = c("Rm", "R", "DR", "DR (Nucleus)"))
+
+parameters["k.s_r"] = 3.22
+```
+R just reduces to 0, as can be seen in the plot.
+
+## Question 5:
+```{r}
+ks_Rm.var = c(2.9/5, 2.9/2, 2.9*2, 2.9*5)
+kd_Rm.var = c(2.9/5/4.74, 2.9/2/4.74, 2.9*2/4.74, 2.9*5/4.74)
+i = 0
+
+for (val in ks_Rm.var){
+  i  =+ 1
+  parameters["k.s_Rm"] = val
+  parameters["k.d_Rm"] = kd_Rm.var[i]
+  out <- ode(y = state, times = times, func = GRD, parms = parameters)
+  plot(out, xlab = "Time in hours", ylab = c("Rm (fmol/g liver)", "R (fmol/mg protein)",
+                                             "DR (fmol/mg protein)", "DR (fmol/mg protein)"),
+       main = c("Rm", "R", "DR", "DR (Nucleus)"))
+}
+```
+By changing the production rates of mRNA together with the degradation rates, different observations are made. The lower the values, the slower it takes for DR to form. The higher the values, the faster the mRNA accumulates and makes the other processes hit the equilibrium. By adjusting the degradation rate too, the total Rm won't increase indefinetly.
+
+> try plotting all the lines in one graph, they are very hard to read and compare right now, (again)
