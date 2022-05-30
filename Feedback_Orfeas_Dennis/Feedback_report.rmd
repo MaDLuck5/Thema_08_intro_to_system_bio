@@ -1,0 +1,60 @@
+---
+title: "Feedback report"
+output: pdf_document
+---
+
+
+# Feedback
+
+## 1. concretisering vraagstelling:
+
+goede beandwoording van de vragen en makkelijk te lezen andwoorden
+
+Goed
+
+## 2. de wetenschappelijke methode toepassen:
+
+Nothing to add or remark
+
+Goed
+
+## 3. Rapporteren en presenteren van onderzoek:
+
+de plots zijn niet erg duidelijk en onoverzichtelijk door het gebruik van vele plots met maar 1 lijn terwijl,
+er meerder samen gevoegd kunnen worden.
+
+
+Matig
+
+## 4. experimenten uitvoeren:
+
+Goed
+
+## 5. programmeren:
+
+some mistakes in the assigning of variables in R and one small logic error in week 3 assignment 2 question 2.
+
+Matig
+
+## 6. de software ontwikkelingscyclus doorlopen:
+
+difrentiaal vergelijking is goed gemodeleerd enkel met een fout op een complexe wijzeging in het model zie punt 5
+
+Matig
+
+## 7. code beheren:
+
+commit messages to the point and clear not much to add
+
+Uitstekend
+
+## 10. instrureren en 8.  het eigen systeem beheren:
+NVT.
+## 11. project matig werken:
+NVT.
+## 12. samenwerken in teams:
+NVT.
+## 13. zelfsturing:
+NVT.
+
+*sommige onderdelen zijn niet van toepassing op de opdracht van week 3 en kunnen niet naar eerlijk heid beordeelt worden momenteel
