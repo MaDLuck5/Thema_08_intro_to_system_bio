@@ -1,0 +1,72 @@
+---
+title: "R Notebook"
+output: html_document
+---
+
+The [R plugin](https://www.jetbrains.com/help/pycharm/r-plugin-support.html) for IntelliJ-based IDEs provides
+handy capabilities to work with the [R Markdown](https://www.jetbrains.com/help/pycharm/r-markdown.html) files.
+To [add](https://www.jetbrains.com/help/pycharm/r-markdown.html#add-code-chunk) a new R chunk,
+```{r}
+library("deSolve")
+
+```
+```{r}
+# TODO fixe logical bug
+
+# variables
+tau_p <- 8.893084e+00
+tau_b <- 1.793090e+01
+
+A <- 1.15
+B <- 0.08
+C <- 0.1
+
+
+parameters <- c(p       = 6.459494e-05, # fraction susceptible to bite
+                alpha   = 1.904753e-03, # rate of bites
+                beta    = 2.233049e+00, # between-host infection
+                gamma_b = 2.293953e-01, # E to I
+                gamma_p = 2.863875e-01, # E to I
+                delta_b = 2.626527e-01, # recovery + death
+                delta_p = 3.413748e-01, # recovery + death
+                epsilon = 3.204494e-02, # I_b to I_p
+                kk      = 1.105443e+00, # Imperfect intervention
+                N       = 25570895     # population size
+                )
+
+S_b_0 <- as.integer(parameters["N"]*parameters["p"])
+S_p_0 <- as.integer(parameters["N"] ) - S_b_0
+
+state <- c(Sb = S_b_0, Sy= S_p_0, Eb = 0, Ey =  0, Ib = 1, Ip = 1)
+
+times <- seq(0, 70,  by = 1)
+
+flea <- function (t){
+  return (A + B*sin((pi/180.)*t) + C*cos((pi/180.)*t))
+}
+intervention_p <- function (t){
+  return (1. - 1./(parameters["kk"] + (tau_p - t)^2))
+}
+intervention_b <- function (t){
+  return (1. - 1./(parameters["kk"] + (tau_b - t)^2))
+}
+
+deterministic_model <- function(t, y, parms){
+  with(as.list(c(parms, y, t)),{
+    delta.Sb <- -alpha*flea(t)*intervention_b(t)*y["Sb"] - beta*intervention_p(t)*y["Sb"]*y["Ip"]/N
+    delta.Sy <- -beta*intervention_p(t)*y["Sy"]*y["Ip"]/N
+    delta.Eb <- alpha*flea(t)*intervention_b(t)*y["Sb"] - gamma_b*y["Eb"]
+    delta.Ey <- beta*intervention_p(t)*(y["Sb"]+y["Sy"])*y["Ib"]/N - gamma_p*y[" Ey"]
+    delta.Ib <- gamma_b*y["Eb"] - epsilon*y["Ib"] - delta_b*y["Ib"]
+    delta.Ip <- gamma_p*y[" Ey"] + epsilon*y["Ib"] - delta_p*y["Ip"]
+
+
+        return(list(c(delta.Sb, delta.Sy, delta.Eb, delta.Ey, delta.Ib, delta.Ip)))
+       })
+}
+
+# Run the ode model and save the output to the out variable
+out <- ode(times = times, y = state,   parms = parameters, func = deterministic_model, method = "euler")
+
+plot(out)
+```
