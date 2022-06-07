@@ -14,6 +14,7 @@ library("deSolve")
 # TODO fixe logical bug
 
 # variables
+
 tau_p <- 8.893084e+00
 tau_b <- 1.793090e+01
 
@@ -34,27 +35,27 @@ parameters <- c(p       = 6.459494e-05, # fraction susceptible to bite
                 N       = 25570895     # population size
                 )
 
-S_b_0 <- as.integer(parameters["N"]*parameters["p"])
-S_p_0 <- as.integer(parameters["N"] ) - S_b_0
+S_b_0 <- as.numeric(parameters["N"]*parameters["p"])
+S_p_0 <- as.numeric(parameters["N"] - S_b_0)
 
-state <- c(Sb = S_b_0, Sy= S_p_0, Eb = 0, Ey =  0, Ib = 1, Ip = 1)
+state <- c(Sb = S_b_0, Sy = S_p_0, Eb = 0, Ey =  0, Ib = 1, Ip = 1)
 
 times <- seq(0, 70,  by = 0.1)
 
 flea <- function (t){
-  x <- A + B*sin((pi/180.)*t) + C*cos((pi/180.)*t)
+  x <- A + B * sin((pi/180.) * t) + C * cos((pi/180.) * t )
+
   return (x)
 }
 intervention_p <- function (t){
-  return (1. - 1./(as.integer(parameters["kk"]) + exp(tau_p - t)))
+  return (1. - 1./(parameters["kk"] + exp(tau_p - t)))
 }
 intervention_b <- function (t){
-  return (1. - 1./((parameters["kk"]) + exp(tau_b - t)))
+  return (1. - 1./(parameters["kk"] + exp(tau_b - t)))
 }
 
 deterministic_model <- function(t, y, parms){
   with(as.list(c(parms, y, t)),{
-
     delta.Sb <- -(alpha * flea(t) * intervention_b(t) * Sb) - (beta * intervention_p(t) * Sb * Ip/N)
     delta.Sy <- -(beta * intervention_p(t) * Sy * Ip/N)
     delta.Eb <- alpha * flea(t) * intervention_b(t)* Sb - gamma_b*Eb
