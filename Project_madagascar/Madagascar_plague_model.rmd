@@ -39,26 +39,28 @@ S_p_0 <- as.integer(parameters["N"] ) - S_b_0
 
 state <- c(Sb = S_b_0, Sy= S_p_0, Eb = 0, Ey =  0, Ib = 1, Ip = 1)
 
-times <- seq(0, 70,  by = 1)
+times <- seq(0, 70,  by = 0.1)
 
 flea <- function (t){
-  return (A + B*sin((pi/180.)*t) + C*cos((pi/180.)*t))
+  x <- A + B*sin((pi/180.)*t) + C*cos((pi/180.)*t)
+  return (x)
 }
 intervention_p <- function (t){
-  return (1. - 1./(parameters["kk"] + (tau_p - t)^2))
+  return (1. - 1./(as.integer(parameters["kk"]) + exp(tau_p - t)))
 }
 intervention_b <- function (t){
-  return (1. - 1./(parameters["kk"] + (tau_b - t)^2))
+  return (1. - 1./((parameters["kk"]) + exp(tau_b - t)))
 }
 
 deterministic_model <- function(t, y, parms){
   with(as.list(c(parms, y, t)),{
-    delta.Sb <- -alpha*flea(t)*intervention_b(t)*y["Sb"] - beta*intervention_p(t)*y["Sb"]*y["Ip"]/N
-    delta.Sy <- -beta*intervention_p(t)*y["Sy"]*y["Ip"]/N
-    delta.Eb <- alpha*flea(t)*intervention_b(t)*y["Sb"] - gamma_b*y["Eb"]
-    delta.Ey <- beta*intervention_p(t)*(y["Sb"]+y["Sy"])*y["Ib"]/N - gamma_p*y[" Ey"]
-    delta.Ib <- gamma_b*y["Eb"] - epsilon*y["Ib"] - delta_b*y["Ib"]
-    delta.Ip <- gamma_p*y[" Ey"] + epsilon*y["Ib"] - delta_p*y["Ip"]
+
+    delta.Sb <- -(alpha * flea(t) * intervention_b(t) * Sb) - (beta * intervention_p(t) * Sb * Ip/N)
+    delta.Sy <- -(beta * intervention_p(t) * Sy * Ip/N)
+    delta.Eb <- alpha * flea(t) * intervention_b(t)* Sb - gamma_b*Eb
+    delta.Ey <- beta * intervention_p(t) * (Sb+Sy) * Ib/N - gamma_p*Ey
+    delta.Ib <- gamma_b* Eb - epsilon * Ib - delta_b * Ib
+    delta.Ip <- gamma_p* Ey + epsilon * Ib- delta_p * Ip
 
 
         return(list(c(delta.Sb, delta.Sy, delta.Eb, delta.Ey, delta.Ib, delta.Ip)))
@@ -68,5 +70,7 @@ deterministic_model <- function(t, y, parms){
 # Run the ode model and save the output to the out variable
 out <- ode(times = times, y = state,   parms = parameters, func = deterministic_model, method = "euler")
 
+plot(as.data.frame(out)$Eb, type = "l", xlab = "Time in Days", ylab = "Bubonice indices", col = "blue", ylim = c(0, 30))
+plot(as.data.frame(out)$Ey, type = "l", xlab = "Time in Days", ylab = "Puneonic indices", col = "blue", ylim = c(0, 120))
 plot(out)
 ```
