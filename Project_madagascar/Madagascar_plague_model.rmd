@@ -83,3 +83,53 @@ plot(out)
 plot(data$Ip)
 
 ```
+```{r stochastic}
+v_flea <- vectorize(flea)
+v_itv_p <- vectorize(intervention_p)
+v_itv_b <- vectorize(intervention_b)
+
+f_irf <- v_flea(t)
+f_itv_b <- v_itv_b(t)
+f_itv_p <- v_itv_p(t)
+
+unit_vector <- function (i, D){
+  out <- zeros(D)
+  out[i] <- 1
+  return (out)
+}
+
+get_time <- function (rates, Pk, Tk){
+  n <- len(rates)
+  for (i in range(n)){
+    if (rates[i] > 0.0){
+      dt <- array(Pk[i] - Tk[i] / rates[i])
+    } else {
+      break
+    }
+  }
+  idx <- argmin(dt)
+  return (idx, dt[idx])
+}
+
+transition_rates <- function (f_irf, f_itv_p, f_itv_b) {
+  return (array(parameters[["alpha"]] * f_irf * f_itv_b * state[["Sb"]],
+                parameters[["beta"]] * f_itv_p * state[["Sb"]] * state[["Ip"]]/parameters[["N"]],
+                parameters[["beta"]] * f_itv_p * state[["Sy"]] * state[["Ip"]]/parameters[["N"]],
+                parameters[["gamma_b"]] * state[["Eb"]],
+                parameters[["gamma_p"]] * state[["Ey"]],
+                parameters[["delta_b"]] * state[["Ib"]],
+                parameters[["delta_p"]] * state[["Ip"]],
+                parameters[["epsilon"]] * state[["Ib"]])
+  )
+}
+
+nu <- array(unit_vector(2, D) - unit_vector(0, D), unit_vector(3, D) - unit_vector(0, D),
+               unit_vector(3, D) - unit_vector(1, D), unit_vector(4, D) - unit_vector(2, D),
+               unit_vector(5, D) - unit_vector(3, D), -unit_vector(4, D), -unit_vector(5, D),
+               unit_vector(5, D) - unit_vector(4, D), dtype=int)
+
+plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b) {
+  x_t <- list()
+
+}
+```
