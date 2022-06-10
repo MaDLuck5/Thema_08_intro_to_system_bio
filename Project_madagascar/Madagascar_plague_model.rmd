@@ -8,7 +8,8 @@ handy capabilities to work with the [R Markdown](https://www.jetbrains.com/help/
 To [add](https://www.jetbrains.com/help/pycharm/r-markdown.html#add-code-chunk) a new R chunk,
 ```{r}
 library("deSolve")
-
+data <- read.csv("C:\\Users\\matsp\\Downloads\\plague2017-master\\plague2017-master\\test2.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
+# options(digits = 15)
 ```
 ```{r}
 # TODO fixe logical bug
@@ -35,12 +36,12 @@ parameters <- c(p       = 6.459494e-05, # fraction susceptible to bite
                 N       = 25570895     # population size
                 )
 
-S_b_0 <- as.numeric(parameters["N"]*parameters["p"])
-S_p_0 <- as.numeric(parameters["N"] - S_b_0)
+S_b_0 <- 1651
+S_p_0 <- 25569244
 
 state <- c(Sb = S_b_0, Sy = S_p_0, Eb = 0, Ey =  0, Ib = 1, Ip = 1)
 
-times <- seq(0, 70,  by = 0.1)
+times <- seq(0, 70 - 1, by = 0.1)
 
 flea <- function (t){
   x <- A + B * sin((pi/180.) * t) + C * cos((pi/180.) * t )
@@ -48,20 +49,25 @@ flea <- function (t){
   return (x)
 }
 intervention_p <- function (t){
-  return (1. - 1./(parameters["kk"] + exp(tau_p - t)))
+  return (1 - 1/(as.numeric(parameters["kk"]) + exp(tau_p - t)))
 }
 intervention_b <- function (t){
-  return (1. - 1./(parameters["kk"] + exp(tau_b - t)))
+  return (1 - 1/(as.numeric(parameters["kk"]) + exp(tau_b - t)))
 }
 
 deterministic_model <- function(t, y, parms){
   with(as.list(c(parms, y, t)),{
-    delta.Sb <- -(alpha * flea(t) * intervention_b(t) * Sb) - (beta * intervention_p(t) * Sb * Ip/N)
-    delta.Sy <- -(beta * intervention_p(t) * Sy * Ip/N)
-    delta.Eb <- alpha * flea(t) * intervention_b(t)* Sb - gamma_b*Eb
-    delta.Ey <- beta * intervention_p(t) * (Sb+Sy) * Ib/N - gamma_p*Ey
-    delta.Ib <- gamma_b* Eb - epsilon * Ib - delta_b * Ib
-    delta.Ip <- gamma_p* Ey + epsilon * Ib- delta_p * Ip
+    flea_t <- flea(t)
+    intervention_b1 <- intervention_b(t)
+    intervention_p1 <- intervention_p(t)
+
+    delta.Sb <- -alpha * flea_t * intervention_b1 * Sb - -beta * intervention_p1 * Sb * Ip/N
+    delta.Sy <- -beta * intervention_p1 * Sy * Ip/N
+    delta.Eb <- alpha * flea_t * intervention_b1 * Sb - gamma_b * Eb
+    delta.Ey <- beta * intervention_p1 * (Sb+Sy) * Ip/N - gamma_p * Ey
+    delta.Ib <- gamma_b * Eb - epsilon * Ib - delta_b * Ib
+    delta.Ip <- gamma_p * Ey + epsilon * Ib - delta_p * Ip
+    print(delta.Sb)
 
 
         return(list(c(delta.Sb, delta.Sy, delta.Eb, delta.Ey, delta.Ib, delta.Ip)))
@@ -69,9 +75,11 @@ deterministic_model <- function(t, y, parms){
 }
 
 # Run the ode model and save the output to the out variable
-out <- ode(times = times, y = state,   parms = parameters, func = deterministic_model, method = "euler")
+out <- ode(times = times, y = state,   parms = parameters, func = deterministic_model, method = "lsoda", atol = 1e-10, rtol = 1e-10)
 
 plot(as.data.frame(out)$Eb, type = "l", xlab = "Time in Days", ylab = "Bubonice indices", col = "blue", ylim = c(0, 30))
 plot(as.data.frame(out)$Ey, type = "l", xlab = "Time in Days", ylab = "Puneonic indices", col = "blue", ylim = c(0, 120))
 plot(out)
+plot(data$Ip)
+
 ```
