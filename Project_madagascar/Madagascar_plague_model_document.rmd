@@ -15,7 +15,6 @@ output:
 # Methods
 
 
-
 # Results
 
 ```{r setup, include = FALSE}
@@ -201,5 +200,11 @@ for (realisation in range(runs)){
 
 # Discussion
 
+in translating the python model to R
+We found that there are some minor internal rounding differences when calculating floats in R and python,
+these differences where isolated and removed, simply by comparing each outcome of the r and python equation and.
+the outcome of each equation used for calculating the delta value was exactly the same.
+This let to that we found that DeSolve ode function and the scypy odeint have minor differences calculation the deltas with a given time that create a snow balling effect.
+this results in the R modell having a higher peak curve compared to the Python 3 model.
 
 # Sources
