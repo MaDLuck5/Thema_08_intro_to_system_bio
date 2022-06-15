@@ -3,6 +3,9 @@ title: "R Notebook"
 output: html_document
 ---
 
+The [R plugin](https://www.jetbrains.com/help/pycharm/r-plugin-support.html) for IntelliJ-based IDEs provides
+handy capabilities to work with the [R Markdown](https://www.jetbrains.com/help/pycharm/r-markdown.html) files.
+To [add](https://www.jetbrains.com/help/pycharm/r-markdown.html#add-code-chunk) a new R chunk,
 ```{r}
 library("deSolve")
 data <- read.csv("C:\\Users\\matsp\\Downloads\\plague2017-master\\plague2017-master\\test2.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
@@ -11,7 +14,8 @@ data <- read.csv("C:\\Users\\matsp\\Downloads\\plague2017-master\\plague2017-mas
 ```{r}
 # TODO fixe logical bug
 
-# Define the variables, parameters, state & time.
+# variables
+
 tau_p <- 8.893084e+00
 tau_b <- 1.793090e+01
 
@@ -39,14 +43,11 @@ state <- c(Sb = S_b_0, Sy = S_p_0, Eb = 0, Ey =  0, Ib = 1, Ip = 1)
 
 times <- seq(0, 70 - 1, by = 0.1)
 
-# Define the flea function for the flea population
 flea <- function (t){
   x <- A + B * sin((pi/180.) * t) + C * cos((pi/180.) * t )
 
   return (x)
 }
-
-# Define the intervention functions of human intervention on the disease
 intervention_p <- function (t){
   return (1 - 1/(as.numeric(parameters["kk"]) + exp(tau_p - t)))
 }
@@ -54,7 +55,6 @@ intervention_b <- function (t){
   return (1 - 1/(as.numeric(parameters["kk"]) + exp(tau_b - t)))
 }
 
-# Define the function for the model of the deterministic data runs
 deterministic_model <- function(t, y, parms){
   with(as.list(c(parms, y, t)),{
     flea_t <- flea(t)
@@ -82,57 +82,4 @@ plot(as.data.frame(out)$Ey, type = "l", xlab = "Time in Days", ylab = "Puneonic 
 plot(out)
 plot(data$Ip)
 
-```
-```{r stochastic}
-# Vectorize the flea & intervention functions
-v_flea <- vectorize(flea)
-v_itv_p <- vectorize(intervention_p)
-v_itv_b <- vectorize(intervention_b)
-
-# Save all the flea/intervention data based on each piece of time
-f_irf <- v_flea(t)
-f_itv_b <- v_itv_b(t)
-f_itv_p <- v_itv_p(t)
-
-# Get the time and make an index with said time
-unit_vector <- function (i, D){
-  out <- zeros(D)
-  out[i] <- 1
-  return (out)
-}
-
-get_time <- function (rates, Pk, Tk){
-  n <- len(rates)
-  for (i in range(n)){
-    if (rates[i] > 0.0){
-      dt <- array(Pk[i] - Tk[i] / rates[i])
-    } else {
-      break
-    }
-  }
-  idx <- argmin(dt)
-  return (idx, dt[idx])
-}
-
-transition_rates <- function (f_irf, f_itv_p, f_itv_b) {
-  return (array(parameters[["alpha"]] * f_irf * f_itv_b * state[["Sb"]],
-                parameters[["beta"]] * f_itv_p * state[["Sb"]] * state[["Ip"]]/parameters[["N"]],
-                parameters[["beta"]] * f_itv_p * state[["Sy"]] * state[["Ip"]]/parameters[["N"]],
-                parameters[["gamma_b"]] * state[["Eb"]],
-                parameters[["gamma_p"]] * state[["Ey"]],
-                parameters[["delta_b"]] * state[["Ib"]],
-                parameters[["delta_p"]] * state[["Ip"]],
-                parameters[["epsilon"]] * state[["Ib"]])
-  )
-}
-
-nu <- array(unit_vector(2, D) - unit_vector(0, D), unit_vector(3, D) - unit_vector(0, D),
-               unit_vector(3, D) - unit_vector(1, D), unit_vector(4, D) - unit_vector(2, D),
-               unit_vector(5, D) - unit_vector(3, D), -unit_vector(4, D), -unit_vector(5, D),
-               unit_vector(5, D) - unit_vector(4, D), dtype=int)
-
-plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b) {
-  x_t <- list()
-
-}
 ```

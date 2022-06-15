@@ -111,8 +111,8 @@ plot(data$Ip)
 ```
 In the graph(s), we can see the plot of the deterministic data model.
 ```{r stochastic}
-
-D <- 5
+state_sto <- c(state[['Sb']],state[['Sy']],state[['Eb']],state[['Ey']],state[['Ib']],state[['Ip']])
+D <- 6
 # Vectorize the flea & intervention functions
 # v_flea <- vectorize(flea)
 # v_itv_p <- vectorize(intervention_p)
@@ -129,21 +129,10 @@ unit_vector <- function (i, D){
   return (out)
 }
 
-# Get the time and make an index with said time
-get_time <- function (rates, Pk, Tk){
-  n <- length(rates)
-  for (i in range(n)){
-    if (rates[i] > 0.0){
-      dt <- array(Pk[i] - Tk[i] / rates[i])
-    } else {
-      break
-    }
-  }
-  idx <- argmin(dt)
-  return (idx, dt[idx])
-}
+
 
 transition_rates <- function (state, f_irf, f_itv_p, f_itv_b) {
+
   return (array(c(parameters[["alpha"]] * f_irf * f_itv_b * state[["Sb"]],
                 parameters[["beta"]] * f_itv_p * state[["Sb"]] * state[["Ip"]]/parameters[["N"]],
                 parameters[["beta"]] * f_itv_p * state[["Sy"]] * state[["Ip"]]/parameters[["N"]],
@@ -151,8 +140,8 @@ transition_rates <- function (state, f_irf, f_itv_p, f_itv_b) {
                 parameters[["gamma_p"]] * state[["Ey"]],
                 parameters[["delta_b"]] * state[["Ib"]],
                 parameters[["delta_p"]] * state[["Ip"]],
-                parameters[["epsilon"]] * state[["Ib"]]))
-  )
+                parameters[["epsilon"]] * state[["Ib"]])))
+
 }
 
 nu <- array(c(unit_vector(2, 6) - unit_vector(0, 6), unit_vector(3, 6) - unit_vector(0, 6),
@@ -160,25 +149,29 @@ nu <- array(c(unit_vector(2, 6) - unit_vector(0, 6), unit_vector(3, 6) - unit_ve
                unit_vector(5, 6) - unit_vector(3, 6), -unit_vector(4, 6), -unit_vector(5, 6),
                unit_vector(5, 6) - unit_vector(4, 6)))
 
-change_func <- function(i, n, firings, nu) {
-  prechange <- c()
-  for (i in range(n)) {
-    append(firings[i]*nu[i], prechange)
-  }
-  return( sum(prechange))
-}
+change_func <- function(n, firings, nu) {
+  prechange <- rep(0,6)
+  for (i in seq(1,n)) {
+    prechange <- prechange + (firings[i]*nu[i])
 
+  }
+  return( prechange)
+}
+x_t <- rep(0,6)
 plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
-  x_t <- list()
-  for (i in range(length(t))){
-    append(x_t, state)
+
+  for (i in seq(0,length(t))){
+
+    x_t <- x_t + state_sto
     rates <- transition_rates(state, f_irf[i], f_itv_p[i], f_itv_b[i])
     n <- length(rates)
-    firings <- rpois(max(rates, rep(0, n))*dt)
-    change <- change_func(i, n, firings, nu)
-    state <- state + change
+    firings <- rpois(rates, rep(1, n))*0.1
+    change <- change_func(n, firings, nu)
+    print(change)
+    state_sto <<- state_sto + change
+
   }
-  x_t <- array(x_t)
+  x_t <- (x_t)
   return(x_t)
 }
 
@@ -189,10 +182,16 @@ runs <- 20
 I_b <- c()
 I_P <- c()
 
-for (realisation in range(runs)){
-  y <- plague_tau(parms, t, f_irf, f_itv_p, f_itv_b, nu)
-  append(y[,4], I_b)
-  append(y[,5], I_P)
+runs <- 1
+repeat {
+  y <- plague_tau(parms, times, f_irf, f_itv_p, f_itv_b, nu)
+  plot(times,y[4])
+  I_b <- c(I_b, y[4])
+  I_P <- c(I_P, y[5])
+  if(runs > 20) {
+      break
+   }
+  runs <- runs +1
 }
 
 ```
