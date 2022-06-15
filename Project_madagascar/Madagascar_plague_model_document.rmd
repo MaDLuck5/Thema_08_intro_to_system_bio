@@ -1,14 +1,40 @@
 ---
-title: "R Notebook"
-output: html_document
+title: "Madagascar Plague Model"
+author: "Mats Slik & Dennis Haandrikman"
+date: June 15th, 2022
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
 ---
 
-```{r}
+
+# Introduction
+
+
+# Methods
+
+
+
+# Results
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
+
+# Required libraries
 library("deSolve")
+library("pander")
+```
+```{r data}
 data <- read.csv("C:\\Users\\matsp\\Downloads\\plague2017-master\\plague2017-master\\test2.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
 # options(digits = 15)
+
+# Run a test to see if the data imported correctly
+pander(head(data))
 ```
-```{r}
+In the table above, the imported data is visible.
+```{r variables}
 # TODO fixe logical bug
 
 # Define the variables, parameters, state & time.
@@ -45,7 +71,6 @@ flea <- function (t){
 
   return (x)
 }
-
 # Define the intervention functions of human intervention on the disease
 intervention_p <- function (t){
   return (1 - 1/(as.numeric(parameters["kk"]) + exp(tau_p - t)))
@@ -54,6 +79,8 @@ intervention_b <- function (t){
   return (1 - 1/(as.numeric(parameters["kk"]) + exp(tau_b - t)))
 }
 
+```
+```{r Deterministic model}
 # Define the function for the model of the deterministic data runs
 deterministic_model <- function(t, y, parms){
   with(as.list(c(parms, y, t)),{
@@ -83,6 +110,7 @@ plot(out)
 plot(data$Ip)
 
 ```
+In the graph(s), we can see the plot of the deterministic data model.
 ```{r stochastic}
 # Vectorize the flea & intervention functions
 v_flea <- vectorize(flea)
@@ -94,13 +122,13 @@ f_irf <- v_flea(t)
 f_itv_b <- v_itv_b(t)
 f_itv_p <- v_itv_p(t)
 
-# Get the time and make an index with said time
 unit_vector <- function (i, D){
   out <- zeros(D)
   out[i] <- 1
   return (out)
 }
 
+# Get the time and make an index with said time
 get_time <- function (rates, Pk, Tk){
   n <- len(rates)
   for (i in range(n)){
@@ -136,3 +164,11 @@ plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b) {
 
 }
 ```
+
+# Conclusion
+
+
+# Discussion
+
+
+# Sources
