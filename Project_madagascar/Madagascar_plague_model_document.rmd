@@ -143,15 +143,15 @@ get_time <- function (rates, Pk, Tk){
   return (idx, dt[idx])
 }
 
-transition_rates <- function (f_irf, f_itv_p, f_itv_b) {
-  return (array(parameters[["alpha"]] * f_irf * f_itv_b * state[["Sb"]],
+transition_rates <- function (state, f_irf, f_itv_p, f_itv_b) {
+  return (array(c(parameters[["alpha"]] * f_irf * f_itv_b * state[["Sb"]],
                 parameters[["beta"]] * f_itv_p * state[["Sb"]] * state[["Ip"]]/parameters[["N"]],
                 parameters[["beta"]] * f_itv_p * state[["Sy"]] * state[["Ip"]]/parameters[["N"]],
                 parameters[["gamma_b"]] * state[["Eb"]],
                 parameters[["gamma_p"]] * state[["Ey"]],
                 parameters[["delta_b"]] * state[["Ib"]],
                 parameters[["delta_p"]] * state[["Ip"]],
-                parameters[["epsilon"]] * state[["Ib"]])
+                parameters[["epsilon"]] * state[["Ib"]]))
   )
 }
 
@@ -172,7 +172,7 @@ plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
   x_t <- list()
   for (i in range(length(t))){
     append(x_t, state)
-    rates <- transition_rates(x, f_irf[i], f_itv_p[i], f_itv_b[i])
+    rates <- transition_rates(state, f_irf[i], f_itv_p[i], f_itv_b[i])
     n <- length(rates)
     firings <- rpois(max(rates, rep(0, n))*dt)
     change <- change_func(i, n, firings, nu)
