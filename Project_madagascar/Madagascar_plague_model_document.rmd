@@ -111,15 +111,17 @@ plot(data$Ip)
 ```
 In the graph(s), we can see the plot of the deterministic data model.
 ```{r stochastic}
+
+D <- 5
 # Vectorize the flea & intervention functions
 # v_flea <- vectorize(flea)
 # v_itv_p <- vectorize(intervention_p)
 # v_itv_b <- vectorize(intervention_b)
 
 # Save all the flea/intervention data based on each piece of time
-f_irf <- flea(t)
-f_itv_b <- intervention_b(t)
-f_itv_p <- intervention_p(t)
+f_irf <- flea(times)
+f_itv_b <- intervention_b(times)
+f_itv_p <- intervention_p(times)
 
 unit_vector <- function (i, D){
   out <- rep(0, D)
@@ -153,10 +155,10 @@ transition_rates <- function (f_irf, f_itv_p, f_itv_b) {
   )
 }
 
-nu <- array(unit_vector(2, D) - unit_vector(0, D), unit_vector(3, D) - unit_vector(0, D),
-               unit_vector(3, D) - unit_vector(1, D), unit_vector(4, D) - unit_vector(2, D),
-               unit_vector(5, D) - unit_vector(3, D), -unit_vector(4, D), -unit_vector(5, D),
-               unit_vector(5, D) - unit_vector(4, D), dtype=int)
+nu <- array(c(unit_vector(2, 6) - unit_vector(0, 6), unit_vector(3, 6) - unit_vector(0, 6),
+               unit_vector(3, 6) - unit_vector(1, 6), unit_vector(4, 6) - unit_vector(2, 6),
+               unit_vector(5, 6) - unit_vector(3, 6), -unit_vector(4, 6), -unit_vector(5, 6),
+               unit_vector(5, 6) - unit_vector(4, 6)))
 
 change_func <- function(i, n, firings, nu) {
   prechange <- c()
@@ -169,12 +171,12 @@ change_func <- function(i, n, firings, nu) {
 plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
   x_t <- list()
   for (i in range(length(t))){
-    append(x_t, x)
+    append(x_t, state)
     rates <- transition_rates(x, f_irf[i], f_itv_p[i], f_itv_b[i])
     n <- length(rates)
     firings <- rpois(max(rates, rep(0, n))*dt)
     change <- change_func(i, n, firings, nu)
-    x <- x + change
+    state <- state + change
   }
   x_t <- array(x_t)
   return(x_t)
