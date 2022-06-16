@@ -1,16 +1,39 @@
 ---
-title: "Madagascar Plague Model"
-author: "Mats Slik & Dennis Haandrikman"
+title: "The 2017 plague outbreak in Madagascar & the Madagascar Plague Model"
+author:
+  - name: Mats Slik
+    affiliation: Hanze University of Applied Sciences
+    address:
+    - Zernikeplein 11
+    - room D1.12
+    email: m.p.slik@st.hanze.nl
+  - name: Dennis Haandrikman
+    affiliation: Hanze University of Applied Sciences
+    address:
+    - Zernikeplein 11
+    - room D1.12
+    email: d.haandrikman@st.hanze.nl
+abstract: >
+  During this experiment there
 date: June 15th, 2022
 output:
-  pdf_document:
-    toc: true
-    toc_depth: 2
+    pdf_document:
+      toc: true
+      toc_depth: 2
 ---
 
 
 # Introduction
 
+The goal of this experiment was to learn more about the behaviour and the way the plague spreads and then modelling our findingss about the plague.
+Due to the fact that Madagascar has annual plague outbreaks, it was decided to use their outbreak information/data as data for this experiment.
+
+The plague has once been one of the deadliest natural disasters in human history, referred to as the Black Death, attributed to the bacterium 'Yersinia pestis'. (
+Although the disease was widespread in ancient times, nowadays, plague epidemics still pose a threat to humans, as there are reports of continues annual infections in the following 5 countries:
+Madagascar, Tanzania, Vietnam, China & the USA.
+
+One of the goals set for this experiment is to recreate the model and results that the researchers gained from their experiments.
+To remake the model, the formula's used in the document have been
 
 # Methods
 
@@ -203,11 +226,21 @@ repeat {
 
 # Discussion
 
-in translating the python model to R
+While translating the python model to R.
 We found that there are some minor internal rounding differences when calculating floats in R and python,
-these differences where isolated and removed, simply by comparing each outcome of the r and python equation and.
+these differences where isolated and removed, simply by comparing each outcome of the r and python equation and
 the outcome of each equation used for calculating the delta value was exactly the same.
-This let to that we found that DeSolve ode function and the scypy odeint have minor differences calculation the deltas with a given time that create a snow balling effect.
-this results in the R modell having a higher peak curve compared to the Python 3 model.
+Furthermore, we rewrote the R code back to python code to see if there were any differences or mistakes in our code, compared to the document's code.
+In the end we only managed to find one mistake between the code. Although even after fixing the error, the results in R are different from python, even between our own code.
+
+This let to that we found that DeSolve ode function and the scipy odeint have minor differences in calculating the deltas, that with a given time create a snowball effect.
+This results in the R model having a higher peak curve compared to the Python 3 model.
+
+Also, while converting the stochastic model from python to R.
+It was apparent that we had to fully rewrite the code that they have used as it wasn't easily use-able in R itself.
+This has lead to some complications in writing the code in an R-styled manner.
 
 # Sources
+
+https://www.sciencedirect.com/science/article/pii/S1755436518300070
+
