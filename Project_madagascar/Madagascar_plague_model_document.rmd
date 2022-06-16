@@ -144,10 +144,10 @@ transition_rates <- function (state, f_irf, f_itv_p, f_itv_b) {
 
 }
 
-nu <- array(c(unit_vector(2, 6) - unit_vector(0, 6), unit_vector(3, 6) - unit_vector(0, 6),
-               unit_vector(3, 6) - unit_vector(1, 6), unit_vector(4, 6) - unit_vector(2, 6),
-               unit_vector(5, 6) - unit_vector(3, 6), -unit_vector(4, 6), -unit_vector(5, 6),
-               unit_vector(5, 6) - unit_vector(4, 6)))
+nu <- array(c(unit_vector(2, D) - unit_vector(0, D), unit_vector(3, D) - unit_vector(0, D),
+               unit_vector(3, D) - unit_vector(1, D), unit_vector(4, D) - unit_vector(2, D),
+               unit_vector(5, D) - unit_vector(3, D), -unit_vector(4, D), -unit_vector(5, D),
+               unit_vector(5, D) - unit_vector(4, D)))
 
 change_func <- function(n, firings, nu) {
   prechange <- rep(0,6)
@@ -157,12 +157,13 @@ change_func <- function(n, firings, nu) {
   }
   return( prechange)
 }
-x_t <- rep(0,6)
+
 plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
-
+  x_t <- data.frame(matrix(ncol = 6, nrow = 0))
+  colnames(x_t)<- c("Sb", 'Sy', 'Eb', 'Ey', 'Ib', "Ip")
   for (i in seq(0,length(t))){
+    x_t[nrow(x_t) + 1,] <- state_sto
 
-    x_t <- x_t + state_sto
     rates <- transition_rates(state, f_irf[i], f_itv_p[i], f_itv_b[i])
     n <- length(rates)
     firings <- rpois(rates, rep(1, n))*0.1
@@ -179,15 +180,16 @@ plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
 set.seed(10042018)
 runs <- 20
 
-I_b <- c()
+I_b <- da
 I_P <- c()
 
 runs <- 1
 repeat {
   y <- plague_tau(parms, times, f_irf, f_itv_p, f_itv_b, nu)
-  plot(times,y[4])
-  I_b <- c(I_b, y[4])
-  I_P <- c(I_P, y[5])
+
+  I_b <- y$Ib
+  I_P <- y$Ip
+
   if(runs > 20) {
       break
    }
