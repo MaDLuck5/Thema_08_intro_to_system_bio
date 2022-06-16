@@ -14,7 +14,7 @@ author:
     - room D1.12
     email: d.haandrikman@st.hanze.nl
 abstract: >
-  During this experiment there
+  During this experiment there (finish writing)
 date: June 15th, 2022
 output:
     pdf_document:
@@ -25,18 +25,37 @@ output:
 
 # Introduction
 
-The goal of this experiment was to learn more about the behaviour and the way the plague spreads and then modelling our findingss about the plague.
+The goal of this experiment was to learn more about the behaviour and the way the plague spreads and then modelling our findings about the plague.
 Due to the fact that Madagascar has annual plague outbreaks, it was decided to use their outbreak information/data as data for this experiment.
 
-The plague has once been one of the deadliest natural disasters in human history, referred to as the Black Death, attributed to the bacterium 'Yersinia pestis'. (
+The plague has once been one of the deadliest natural disasters in human history, referred to as the Black Death, attributed to the bacterium 'Yersinia pestis'. (source here)
 Although the disease was widespread in ancient times, nowadays, plague epidemics still pose a threat to humans, as there are reports of continues annual infections in the following 5 countries:
-Madagascar, Tanzania, Vietnam, China & the USA.
+Madagascar, Tanzania, Vietnam, China & the USA. (source here)
+(expand on the disease, perhaps the means of spread, fleas, rats & pathogenesis.)
 
 One of the goals set for this experiment is to recreate the model and results that the researchers gained from their experiments.
-To remake the model, the formula's used in the document have been
+To remake the model, the formula's used in the document have been used and adapted to R code, so they can be used with the Desolve package in R. To help with this, the researchers published their code on github, although their code was written in python and had to be adapted to R.
+Due to that, we also used the same parameters & data the researchers used.
+
+
 
 # Methods
 
+Outbreak data
+The outbreak data was manually inputted from separate reports of WHO (World Health Organization), including the cumulative total numbers of clinical cases.
+
+Temperature & Precipation data
+Data used is the same as the researchers requested from the National Centers for Environmental Information.
+
+Plague transmission model (PTM)
+The plague transmission model used is a modified SEIR (Susceptible-Exposed-Infectious-Removed) model, it contains 2 additional components reflecting the seasonal from infected rat fleas and the imperfect effects of public health interventions.
+
+Libraries
+•    pander
+  -This library is used to print out data/R-code in an alternative way, usually easier to read.
+
+•    deSolve
+  -This library contains the ODE that was used to recreate the model in the R language.
 
 # Results
 
