@@ -186,7 +186,6 @@ plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
   colnames(x_t)<- c("Sb", 'Sy', 'Eb', 'Ey', 'Ib', "Ip")
   for (i in seq(0,length(t))){
     x_t[nrow(x_t) + 1,] <- state_sto
-
     rates <- transition_rates(state, f_irf[i], f_itv_p[i], f_itv_b[i])
     n <- length(rates)
     firings <- rpois(rates, rep(1, n))*0.1
