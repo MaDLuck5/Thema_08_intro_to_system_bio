@@ -189,14 +189,14 @@ transition_rates <- function (state, f_irf, f_itv_p, f_itv_b) {
 nu <- array(c(unit_vector(2, D) - unit_vector(0, D), unit_vector(3, D) - unit_vector(0, D),
                unit_vector(3, D) - unit_vector(1, D), unit_vector(4, D) - unit_vector(2, D),
                unit_vector(5, D) - unit_vector(3, D), -unit_vector(4, D), -unit_vector(5, D),
-               unit_vector(5, D) - unit_vector(4, D)), dim = c(8,5))
+               unit_vector(5, D) - unit_vector(4, D)), dim = c(6,8))
 
 change_func <- function(n, firings, nu) {
   prechange <- rep(0,6)
 
   for (i in seq(1,n)) {
 
-    prechange <- c(prechange,(firings[i]*nu[i]))
+    prechange <- prechange + (firings[i]*nu[i])
 
   }
   return(prechange)
