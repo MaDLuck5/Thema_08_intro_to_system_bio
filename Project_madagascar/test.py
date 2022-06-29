@@ -83,7 +83,7 @@ t = np.arange(0.0, lentime + dt, dt)
 z = odeint(deterministic_model, x_0, t)
 data_py = z
 
-with open('C:/Users/matsp/Downloads/plague2017-master/plague2017-master/test2.csv', 'w',
+with open('C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//test2.csv', 'w',
           encoding='UTF8') as f:
     writer = csv.writer(f)
 
@@ -112,4 +112,4 @@ axes[1].set_title('Pneumonic', fontsize=18)
 axes[0].legend(loc=(0.4,-0.3), ncol=3, fontsize=16)
 
 plt.tight_layout()
-plt.savefig('C:/Users/matsp/Downloads/plague2017-master/plague2017-master/Fig1.pdf', dpi=300, bbox_inches='tight')
+plt.savefig('C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig1.pdf', dpi=300, bbox_inches='tight')

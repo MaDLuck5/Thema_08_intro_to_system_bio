@@ -68,7 +68,7 @@ library("deSolve")
 library("pander")
 ```
 ```{r data}
-data <- read.csv("C:\\Users\\matsp\\Downloads\\plague2017-master\\plague2017-master\\test2.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
+data <- read.csv("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//test2.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
 # options(digits = 15)
 
 # Run a test to see if the data imported correctly
@@ -135,7 +135,7 @@ deterministic_model <- function(t, y, parms){
     delta.Ey <- beta * intervention_p1 * (Sb+Sy) * Ip/N - gamma_p * Ey
     delta.Ib <- gamma_b * Eb - epsilon * Ib - delta_b * Ib
     delta.Ip <- gamma_p * Ey + epsilon * Ib - delta_p * Ip
-    print(delta.Sb)
+
 
 
         return(list(c(delta.Sb, delta.Sy, delta.Eb, delta.Ey, delta.Ib, delta.Ip)))
@@ -167,7 +167,7 @@ f_itv_p <- intervention_p(times)
 
 unit_vector <- function (i, D){
   out <- rep(0, D)
-  out[i] <- 1
+  out[i+1] <- 1
   return (out)
 }
 
@@ -189,15 +189,17 @@ transition_rates <- function (state, f_irf, f_itv_p, f_itv_b) {
 nu <- array(c(unit_vector(2, D) - unit_vector(0, D), unit_vector(3, D) - unit_vector(0, D),
                unit_vector(3, D) - unit_vector(1, D), unit_vector(4, D) - unit_vector(2, D),
                unit_vector(5, D) - unit_vector(3, D), -unit_vector(4, D), -unit_vector(5, D),
-               unit_vector(5, D) - unit_vector(4, D)))
+               unit_vector(5, D) - unit_vector(4, D)), dim = c(8,5))
 
 change_func <- function(n, firings, nu) {
   prechange <- rep(0,6)
+
   for (i in seq(1,n)) {
-    prechange <- prechange + (firings[i]*nu[i])
+
+    prechange <- c(prechange,(firings[i]*nu[i]))
 
   }
-  return( prechange)
+  return(prechange)
 }
 
 plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
@@ -207,7 +209,7 @@ plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
     x_t[nrow(x_t) + 1,] <- state_sto
     rates <- transition_rates(state, f_irf[i], f_itv_p[i], f_itv_b[i])
     n <- length(rates)
-    firings <- rpois(rates, rep(1, n))*0.1
+    firings <<- rpois(n, max(rates, rep(0, n)*0.1))
     change <- change_func(n, firings, nu)
     print(change)
     state_sto <<- state_sto + change
@@ -221,15 +223,19 @@ plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
 set.seed(10042018)
 runs <- 20
 
-I_b <- da
-I_P <- c()
+I_blist <- list()
+I_Plist <- list()
 
 runs <- 1
 repeat {
   y <- plague_tau(parms, times, f_irf, f_itv_p, f_itv_b, nu)
 
-  I_b <- y$Ib
-  I_P <- y$Ip
+  I_b <- (y$Ib)
+  I_P <- (y$Ip)
+
+  I_blist <- append(I_blist, list(I_b))
+  I_Plist <- append(I_Plist, list(I_P))
+
 
   if(runs > 20) {
       break
