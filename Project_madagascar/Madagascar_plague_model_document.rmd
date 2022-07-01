@@ -112,11 +112,17 @@ library("pander")
 ```
 ```{r data}
 # get the working directory
+# Make sure the working directory is the main_folder containing all the folders, assignment1-3 & project madagascar.
 working_directory <- getwd()
 # get the directory for the data_file
-data_file_bugfix <- paste(working_directory, "/Project_madagascar/Data/", sep = "")
-data <- read.csv("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//deterministic_model_data.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
+data_file_bugfix <- paste(working_directory, "/Project_madagascar/deterministic_model_data.csv", sep = "")
+data <- read.csv(file= data_file_bugfix, col.names=c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
+# The hashed code underneath is for ease of use importing the data at home.
+#data <- read.csv("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//deterministic_model_data.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
 # options(digits = 15)
+
+# If none of the data-imports above are working, get the "deterministic_model_data.csv" in the same folder/directory as the code and run the following
+# data <- read.csv(file="deterministic_model_data.csv", col.names=c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
 
 # Run a test to see if the data imported correctly
 pander(head(data))
@@ -326,19 +332,22 @@ However, due to them not being a 100% match as expected, there are some differen
 
 While translating the python model to R.
 We found that there are some minor internal rounding differences when calculating floats in R and python,
-these differences where isolated and removed, simply by comparing each outcome of the r and python equation and
-the outcome of each equation used for calculating the delta value was exactly the same.
+these differences where isolated and removed, simply by comparing each outcome of the R and python equations and
+we discovered that the outcome of each equation used for calculating the delta value was exactly the same between the 2 languages.
 Furthermore, we rewrote the R code back to python code to see if there were any differences or mistakes in our code, compared to the document's code.
 In the end we only managed to find one mistake between the code. Although even after fixing the error, the results in R are slightly different from python, even between our own code.
-Although the differences aren't statistically significant.
+Although the differences aren't statistically significant, as shown by the t-test performed on both generated datasets.
 
-This let to that we found that DeSolve ode function and the scipy odeint have minor differences in calculating the deltas, that with a given time create a snowball effect.
+This let to that we found that the DeSolve ode function and the scipy odeint have minor differences in calculating the deltas, that with a given time create a snowball effect.
 
 Also, while converting the stochastic model from python to R.
 It was apparent that we had to fully rewrite the code that they have used as it wasn't easily use-able in R itself.
 This has lead to some complications in writing the code in an R-styled manner.
 Due to unexpected workload in converting the python stochastic code to functional R code, we underestimated the time that was needed. And thus weren't able to fully get the stochastic code running.
 We managed to isolate the issues to the dynamics in or around calculating the change and the function "change_func" in the "plague_tau" function. Instead of creating a correct delta it only decreases or only increases.
+
+We believe that if we had more time, that the data generated would be similar between both R and Python,
+although it would be interesting to see what other minor differences between R and Python we could find when running a stochastic model.
 
 # Sources
 
