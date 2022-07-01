@@ -327,14 +327,16 @@ We found that there are some minor internal rounding differences when calculatin
 these differences where isolated and removed, simply by comparing each outcome of the r and python equation and
 the outcome of each equation used for calculating the delta value was exactly the same.
 Furthermore, we rewrote the R code back to python code to see if there were any differences or mistakes in our code, compared to the document's code.
-In the end we only managed to find one mistake between the code. Although even after fixing the error, the results in R are different from python, even between our own code.
+In the end we only managed to find one mistake between the code. Although even after fixing the error, the results in R are slightly different from python, even between our own code.
+Although the differences aren't statistically significant.
 
 This let to that we found that DeSolve ode function and the scipy odeint have minor differences in calculating the deltas, that with a given time create a snowball effect.
-This results in the R model having a higher peak curve compared to the Python 3 model.
 
 Also, while converting the stochastic model from python to R.
 It was apparent that we had to fully rewrite the code that they have used as it wasn't easily use-able in R itself.
 This has lead to some complications in writing the code in an R-styled manner.
+Due to unexpected workload in converting the python stochastic code to functional R code, we underestimated the time that was needed. And thus weren't able to fully get the stochastic code running.
+We managed to isolate the issues to the dynamics in or around calculating the change and the function "change_func" in the "plague_tau" function. Instead of creating a correct delta it only decreases or only increases.
 
 # Sources
 
