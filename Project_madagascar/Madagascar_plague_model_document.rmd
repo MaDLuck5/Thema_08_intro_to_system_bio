@@ -123,7 +123,7 @@ pander(head(data))
 ```
 In the table above, the imported data is visible.
 ```{r variables}
-# TODO fixe logical bug
+
 
 # Define the variables, parameters, state & time.
 tau_p <- 8.893084e+00
@@ -221,6 +221,7 @@ As we can see, the plots are almost identical, further supported by the t-test's
 What is of note however is that there are some minor differences between R & python, but not significant enough for it to be of an issue.
 
 ```{r stochastic}
+# TODO fix logical error with change output "change_func"
 state_sto <- c(state[['Sb']],state[['Sy']],state[['Eb']],state[['Ey']],state[['Ib']],state[['Ip']])
 D <- 6
 # Vectorize the flea & intervention functions
@@ -278,6 +279,7 @@ plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
     rates <- transition_rates(state, f_irf[i], f_itv_p[i], f_itv_b[i])
     n <- length(rates)
     firings <- rpois(n, max(rates, rep(0, n)*0.1))
+    # TODO
     change <- change_func(n, firings, nu)
 
 
