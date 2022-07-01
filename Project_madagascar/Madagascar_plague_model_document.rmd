@@ -192,12 +192,23 @@ deterministic_model <- function(t, y, parms){
 # Run the ode model and save the output to the out variable
 out <- ode(times = times, y = state,   parms = parameters, func = deterministic_model, method = "lsoda", atol = 1e-10, rtol = 1e-10)
 
-plot(as.data.frame(out)$Eb, type = "l", xlab = "Time in Days", ylab = "Bubonice indices", col = "blue", ylim = c(0, 30), main = "Deterministic model")
-plot(as.data.frame(out)$Ey, type = "l", xlab = "Time in Days", ylab = "Puneonic indices", col = "blue", ylim = c(0, 120), main = "Deterministic model")
-plot(out)
-plot(data$Ip)
+plot(as.data.frame(out)$Ib, type = "l", xlab = "Time in Days", ylab = "Bubonice indices", col = "blue", ylim = c(0, 30), main = "Deterministic model")
+plot(as.data.frame(out)$Ip, type = "l", xlab = "Time in Days", ylab = "Puneonic indices", col = "blue", ylim = c(0, 120), main = "Deterministic model")
+
+# python code figures
 knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig1.pdf")
 knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig2.pdf")
+
+# to test sample diffreance with a simple T test
+print("bubonic comparison")
+(test_ib <- t.test(as.data.frame(out)$Ib,data$Ib))
+cat("the P value", test_ib$p.value, "> alpha 0,05")
+
+print("Puneonic comparison")
+(test_ip <- t.test(as.data.frame(out)$Ip,data$Ip))
+cat("the P value", test_ip$p.value, "> alpha 0,05")
+
+
 
 ```
 ```{r,include=TRUE, fig.align="center", fig.cap=c("Python code figure"), echo=FALSE}
