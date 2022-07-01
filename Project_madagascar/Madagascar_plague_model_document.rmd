@@ -28,9 +28,9 @@ output:
 The goal of this experiment was to learn more about the behaviour and the way the plague spreads and then modelling our findings about the plague.
 Due to the fact that Madagascar has annual plague outbreaks, it was decided to use their outbreak information/data as data for this experiment.
 
-The plague has once been one of the deadliest natural disasters in human history, referred to as the Black Death, attributed to the bacterium 'Yersinia pestis'. (source here)
+The plague has once been one of the deadliest natural disasters in human history, referred to as the Black Death, attributed to the bacterium 'Yersinia pestis'. (Boire et al., 2014)
 Although the disease was widespread in ancient times, nowadays, plague epidemics still pose a threat to humans, as there are reports of continues annual infections in the following 5 countries:
-Madagascar, Tanzania, Vietnam, China & the USA. (source here)
+Madagascar, Tanzania, Vietnam, China & the USA. (Boire et al., 2014; Dennis et al., 1999)
 (expand on the disease, perhaps the means of spread, fleas, rats & pathogenesis.)
 
 One of the goals set for this experiment is to recreate the model and results that the researchers gained from their experiments.
@@ -50,6 +50,45 @@ Data used is the same as the researchers requested from the National Centers for
 Plague transmission model (PTM)
 The plague transmission model used is a modified SEIR (Susceptible-Exposed-Infectious-Removed) model, it contains 2 additional components reflecting the seasonal from infected rat fleas and the imperfect effects of public health interventions.
 
+Formulas
+
+The following formulas were used to model the PTM.
+
+$$
+\frac{dS_{b}}{dt}=-S_b*\alpha f_{irf}-\beta S_b\frac{I_p}{N}f_{itv,h}
+$$
+
+$$
+\frac{dS_p}{dt}=-\beta S_p\frac{I_p}{N}f_{itv,h}
+$$
+
+$$
+\frac{dE_b}{dt}=S_b\alpha f_{irf}f_{irv,f}-\gamma_b E_b
+$$
+
+$$
+\frac{dE_p}{dt}=\beta (S_b+S_p)\frac{I_p}{N}f_{itv,h}-\gamma_p E_p
+$$
+
+$$
+\frac{dI_b}{dt}=\gamma_b E_b-\epsilon I_b-\delta_b I_b
+$$
+
+$$
+\frac{dI_p}{dt}=\gamma_p E_p-\epsilon I_b-\delta_p I_p
+$$
+
+Herein the S, E, I describe Susceptible, Exposed, and Infectious and the subscripts b & p denote the bubonic and pneunomic form.
+The model assumes that there is a fixed population of size N, where only a small part $S_b = pN$ is exposed to infected rat fleas.
+The transmission rates of the flea-to-human and human-to-human are denoted by $\alpha$ and $\beta$.
+Next to that, the flea density fluctuates due to the season's temperature and the breeding pattern of the rats. Due to that, the density of infected rat fleas is described as a sinusoidal function $f_{irf} = A+b\sin(2\pi /12t)+ C\cos(2\pi /12t)$ that follows the temperature fluctuations. Due to this, the flea-to-human transmission parameter $\alpha$ incorporates a scaling factor from temperature to rat fleas.
+
+Due to there going to be interventions that would reduce flea-to-human and human-to-human transmission rates via rodent and flea control.
+However, these effects have been considered imperfect and has a logistical form as $f_{itv,h,f}= 2-2/[1+\theta+ \exp(\tau_h,f-t)]$, where $\tau$ > 0 denotes the time at which the interventions reached half maximum effect in controlling human-to-human $(/tau_h)$ and flea-to-human $(\tau_f)$ transmission.
+The reduction from a perfect intervention is defined by $\theta \ge 0$, where $\theta = 0$ means a perfect scenario.
+The infected cases are assumed to recover and die with the total rate of removal from the infected pool being $\delta_b$ and $\delta_p$ for bubonic and pnuemonic cases.
+
+
 Libraries
 •    pander
   -This library is used to print out data/R-code in an alternative way, usually easier to read.
@@ -68,6 +107,10 @@ library("deSolve")
 library("pander")
 ```
 ```{r data}
+# get the working directory
+working_directory <- getwd()
+# get the directory for the data_file
+data_file_bugfix <- paste(working_directory, "/Project_madagascar/Data/", sep = "")
 data <- read.csv("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//test2.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
 # options(digits = 15)
 
@@ -196,7 +239,7 @@ change_func <- function(n, firings, nu) {
 
   for (i in seq(1,n)) {
 
-    prechange <- prechange + (firings[i]*nu[i])
+    prechange <- prechange + (firings[i]*nu[,i])
 
   }
   return(prechange)
@@ -266,5 +309,8 @@ This has lead to some complications in writing the code in an R-styled manner.
 
 # Sources
 
+Main article:
 https://www.sciencedirect.com/science/article/pii/S1755436518300070
 
+Boire et al., 2014; https://www.longdom.org/open-access/lessons-learned-from-historic-plague-epidemics-the-relevance-of-an-ancient-disease-in-modern-times-2329-8731.1000114.pdf
+Dennis et al., 1999; https://apps.who.int/iris/bitstream/handle/10665/66010/WHO_CDS_CSR_EDC_99.2.pdf?sequence=1&isAllowed=y
