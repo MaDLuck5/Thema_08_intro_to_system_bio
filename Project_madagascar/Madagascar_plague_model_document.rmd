@@ -118,9 +118,6 @@ working_directory <- getwd()
 data_file_bugfix <- paste(working_directory, "/Project_madagascar/deterministic_model_data.csv", sep = "")
 data <- read.csv(file= data_file_bugfix, col.names=c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
 # The hashed code underneath is for ease of use importing the data at home.
-#data <- read.csv("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//deterministic_model_data.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
-# options(digits = 15)
-
 # If none of the data-imports above are working, get the "deterministic_model_data.csv" in the same folder/directory as the code and run the following
 # data <- read.csv(file="deterministic_model_data.csv", col.names=c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
 
@@ -202,9 +199,7 @@ plot(as.data.frame(out)$Ib, type = "l", xlab = "Time in Days", ylab = "Bubonic i
 plot(as.data.frame(out)$Ip, type = "l", xlab = "Time in Days", ylab = "Pneumonic indices", col = "blue", ylim = c(0, 120), main = "Deterministic Pneumonic model")
 
 # python code figures
-# These 2 knitr commands are for ease of use for knitting at home.
-# knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Deterministic_Fig1.pdf")
-# knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Stochastic_+_real_data_Fig2.pdf")
+
 
 knitr::include_graphics("Deterministic_Fig1.pdf")
 knitr::include_graphics("Stochastic_+_real_data_Fig2.pdf")
