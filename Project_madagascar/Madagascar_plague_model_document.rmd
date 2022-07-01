@@ -14,7 +14,7 @@ author:
     - room D1.12
     email: d.haandrikman@st.hanze.nl
 abstract: >
-  During this experiment there (finish writing)
+  During this experiment the plague that occurred in Madagascar in 2017 was used as a means to understand plague transmission as real-time data was collected from official reports, described the outbreak's characteristics and estimated transmission parameters using statistical and mathematical models. 
 date: June 15th, 2022
 output:
     pdf_document:
@@ -28,10 +28,14 @@ output:
 The goal of this experiment was to learn more about the behaviour and the way the plague spreads and then modelling our findings about the plague.
 Due to the fact that Madagascar has annual plague outbreaks, it was decided to use their outbreak information/data as data for this experiment.
 
-The plague has once been one of the deadliest natural disasters in human history, referred to as the Black Death, attributed to the bacterium 'Yersinia pestis'. (Boire et al., 2014)
+The plague has once been one of the deadliest natural disasters in human history, referred to as the Black Death, attributed to the gram-negative bacterium 'Yersinia pestis'. (Boire et al., 2014), it's life-cycle typically starts within an insect vector, in our case: fleas. After which transmission occurs to a mammalian host, typically rodents or other wild animals. Humans are then only affected as incidental hosts.
 Although the disease was widespread in ancient times, nowadays, plague epidemics still pose a threat to humans, as there are reports of continues annual infections in the following 5 countries:
 Madagascar, Tanzania, Vietnam, China & the USA. (Boire et al., 2014; Dennis et al., 1999)
-(expand on the disease, perhaps the means of spread, fleas, rats & pathogenesis.)
+The disease can manifest in different clinical forms of plague: bubonic, pneumonic and septic, as a result of being bitten by infected fleas. Additionally, direct contamination with infective materials can be an alternative transmission route (Boire et al., 2014).
+Patients who contract bubonic plague develop a sudden onset of fever, headache, chills, tender and painful lymph nodes (Robert L. Dillard; Andrew L. Juergens, 2022). While plague can be successfully treated with antibiotics, if left untreated, the bacteria can disseminate from the lymph nodes into the bloodstream causing secondary septicemic plague. Which in addition to the symptoms already present in bubonic plague, patients with septicemic plague undergo abdominal pain and most likely bleeding into the skin and other organs, next to that skin and other tissues may undergo necrosis, especially the fingers, toes and the nose (Centers for Disease
+Control and Prevention, 2005).
+However, the most deadly form of the disease is driven by the pneumonic plague and is the only form of plague that can be spread from person to person by infectious droplets caused by sneezing, coughing or being together in an enclosed space. This form of disease has an average incubation time of 4 days and progresses rapidly and is almost always fatal without sufficient antibiotic treatment (Mead, 2017).
+
 
 One of the goals set for this experiment is to recreate the model and results that the researchers gained from their experiments.
 To remake the model, the formula's used in the document have been used and adapted to R code, so they can be used with the Desolve package in R. To help with this, the researchers published their code on github, although their code was written in python and had to be adapted to R.
@@ -78,7 +82,7 @@ $$
 \frac{dI_p}{dt}=\gamma_p E_p-\epsilon I_b-\delta_p I_p
 $$
 
-Herein the S, E, I describe Susceptible, Exposed, and Infectious and the subscripts b & p denote the bubonic and pneunomic form.
+Herein the S, E, I describe Susceptible, Exposed, and Infectious and the subscripts b & p denote the bubonic and pneumonic form.
 The model assumes that there is a fixed population of size N, where only a small part $S_b = pN$ is exposed to infected rat fleas.
 The transmission rates of the flea-to-human and human-to-human are denoted by $\alpha$ and $\beta$.
 Next to that, the flea density fluctuates due to the season's temperature and the breeding pattern of the rats. Due to that, the density of infected rat fleas is described as a sinusoidal function $f_{irf} = A+b\sin(2\pi /12t)+ C\cos(2\pi /12t)$ that follows the temperature fluctuations. Due to this, the flea-to-human transmission parameter $\alpha$ incorporates a scaling factor from temperature to rat fleas.
@@ -86,7 +90,7 @@ Next to that, the flea density fluctuates due to the season's temperature and th
 Due to there going to be interventions that would reduce flea-to-human and human-to-human transmission rates via rodent and flea control.
 However, these effects have been considered imperfect and has a logistical form as $f_{itv,h,f}= 2-2/[1+\theta+ \exp(\tau_h,f-t)]$, where $\tau$ > 0 denotes the time at which the interventions reached half maximum effect in controlling human-to-human $(/tau_h)$ and flea-to-human $(\tau_f)$ transmission.
 The reduction from a perfect intervention is defined by $\theta \ge 0$, where $\theta = 0$ means a perfect scenario.
-The infected cases are assumed to recover and die with the total rate of removal from the infected pool being $\delta_b$ and $\delta_p$ for bubonic and pnuemonic cases.
+The infected cases are assumed to recover and die with the total rate of removal from the infected pool being $\delta_b$ and $\delta_p$ for bubonic and pneumonic cases.
 
 
 Libraries
@@ -314,3 +318,6 @@ https://www.sciencedirect.com/science/article/pii/S1755436518300070
 
 Boire et al., 2014; https://www.longdom.org/open-access/lessons-learned-from-historic-plague-epidemics-the-relevance-of-an-ancient-disease-in-modern-times-2329-8731.1000114.pdf
 Dennis et al., 1999; https://apps.who.int/iris/bitstream/handle/10665/66010/WHO_CDS_CSR_EDC_99.2.pdf?sequence=1&isAllowed=y
+Robert L. Dillard; Andrew L. Juergens, 2022; https://www.ncbi.nlm.nih.gov/books/NBK549855/
+Centers for Disease Control and Prevention, 2005; https://www.cdc.gov/plague/symptoms/index.html
+Mead, 2017; https://www.nejm.org/doi/10.1056/NEJMp1713881
