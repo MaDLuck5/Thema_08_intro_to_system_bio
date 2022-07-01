@@ -14,7 +14,7 @@ author:
     - room D1.12
     email: d.haandrikman@st.hanze.nl
 abstract: >
-  During this experiment the plague that occurred in Madagascar in 2017 was used as a means to understand plague transmission as real-time data was collected from official reports, described the outbreak's characteristics and estimated transmission parameters using statistical and mathematical models. 
+  During this experiment the plague that occurred in Madagascar in 2017 was used as a means to understand plague transmission as real-time data was collected from official reports, described the outbreak's characteristics and estimated transmission parameters using statistical and mathematical models.
 date: June 15th, 2022
 output:
     pdf_document:
@@ -294,6 +294,7 @@ repeat {
 
 # Conclusion
 
+Looking at the deterministic models from both Python and R, it shows that the graphs are almost similar. Although, due to there being differences in how both coding-styles work under the hood. The graphs are different as is shown in the comparison between the deterministic models of R & python.
 
 # Discussion
 
