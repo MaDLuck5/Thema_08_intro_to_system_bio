@@ -192,13 +192,21 @@ deterministic_model <- function(t, y, parms){
 # Run the ode model and save the output to the out variable
 out <- ode(times = times, y = state,   parms = parameters, func = deterministic_model, method = "lsoda", atol = 1e-10, rtol = 1e-10)
 
-plot(as.data.frame(out)$Eb, type = "l", xlab = "Time in Days", ylab = "Bubonice indices", col = "blue", ylim = c(0, 30))
-plot(as.data.frame(out)$Ey, type = "l", xlab = "Time in Days", ylab = "Puneonic indices", col = "blue", ylim = c(0, 120))
+plot(as.data.frame(out)$Eb, type = "l", xlab = "Time in Days", ylab = "Bubonice indices", col = "blue", ylim = c(0, 30), main = "Deterministic model")
+plot(as.data.frame(out)$Ey, type = "l", xlab = "Time in Days", ylab = "Puneonic indices", col = "blue", ylim = c(0, 120), main = "Deterministic model")
 plot(out)
 plot(data$Ip)
+knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig1.pdf")
+knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig2.pdf")
 
 ```
+```{r,include=TRUE, fig.align="center", fig.cap=c("Python code figure"), echo=FALSE}
+
+```
+
 In the graph(s), we can see the plot of the deterministic data model.
+
+
 ```{r stochastic}
 state_sto <- c(state[['Sb']],state[['Sy']],state[['Eb']],state[['Ey']],state[['Ib']],state[['Ip']])
 D <- 6
@@ -242,7 +250,7 @@ change_func <- function(n, firings, nu) {
   prechange <- rep(0,6)
 
   for (i in seq(1,n)) {
-
+    #print(i)
     prechange <- prechange + (firings[i]*nu[,i])
 
   }
@@ -256,10 +264,11 @@ plague_tau <- function (parms, t, f_irf, f_itv_p, f_itv_b, nu) {
     x_t[nrow(x_t) + 1,] <- state_sto
     rates <- transition_rates(state, f_irf[i], f_itv_p[i], f_itv_b[i])
     n <- length(rates)
-    firings <<- rpois(n, max(rates, rep(0, n)*0.1))
+    firings <- rpois(n, max(rates, rep(0, n)*0.1))
     change <- change_func(n, firings, nu)
-    print(change)
-    state_sto <<- state_sto + change
+
+
+    state_sto <- state_sto + change
 
   }
   x_t <- (x_t)
@@ -277,6 +286,7 @@ runs <- 1
 repeat {
   y <- plague_tau(parms, times, f_irf, f_itv_p, f_itv_b, nu)
 
+
   I_b <- (y$Ib)
   I_P <- (y$Ip)
 
@@ -284,7 +294,7 @@ repeat {
   I_Plist <- append(I_Plist, list(I_P))
 
 
-  if(runs > 20) {
+  if(runs == 20) {
       break
    }
   runs <- runs +1
