@@ -192,14 +192,18 @@ deterministic_model <- function(t, y, parms){
 # Run the ode model and save the output to the out variable
 out <- ode(times = times, y = state,   parms = parameters, func = deterministic_model, method = "lsoda", atol = 1e-10, rtol = 1e-10)
 
-plot(as.data.frame(out)$Ib, type = "l", xlab = "Time in Days", ylab = "Bubonice indices", col = "blue", ylim = c(0, 30), main = "Deterministic model")
-plot(as.data.frame(out)$Ip, type = "l", xlab = "Time in Days", ylab = "Puneonic indices", col = "blue", ylim = c(0, 120), main = "Deterministic model")
+plot(as.data.frame(out)$Ib, type = "l", xlab = "Time in Days", ylab = "Bubonic indices", col = "blue", ylim = c(0, 30), main = "Deterministic Bubonic model")
+plot(as.data.frame(out)$Ip, type = "l", xlab = "Time in Days", ylab = "Pneumonic indices", col = "blue", ylim = c(0, 120), main = "Deterministic Pneumonic model")
 
 # python code figures
-knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig1.pdf")
-knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig2.pdf")
+# These 2 knitr commands are for ease of use for knitting at home.
+# knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig1.pdf")
+# knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig2.pdf")
 
-# to test sample diffreance with a simple T test
+knitr::include_graphics("Fig1.pdf")
+knitr::include_graphics("Fig2.pdf")
+
+# to test sample differance with a simple T-test
 print("bubonic comparison")
 (test_ib <- t.test(as.data.frame(out)$Ib,data$Ib))
 cat("the P value", test_ib$p.value, "> alpha 0,05")
@@ -211,12 +215,10 @@ cat("the P value", test_ip$p.value, "> alpha 0,05")
 
 
 ```
-```{r,include=TRUE, fig.align="center", fig.cap=c("Python code figure"), echo=FALSE}
 
-```
-
-In the graph(s), we can see the plot of the deterministic data model.
-
+In the plots above we can see the R plots of the 2 deterministic models (first two plots & blue line) and the 2 plots from the python code (two last plots with orange line).
+As we can see, the plots are almost identical, further supported by the t-test's done between the 2 datasets generated from R & python.
+What is of note however is that there are some minor differences between R & python, but not significant enough for it to be of an issue.
 
 ```{r stochastic}
 state_sto <- c(state[['Sb']],state[['Sy']],state[['Eb']],state[['Ey']],state[['Ib']],state[['Ip']])
@@ -315,7 +317,8 @@ repeat {
 
 # Conclusion
 
-Looking at the deterministic models from both Python and R, it shows that the graphs are almost similar. Although, due to there being differences in how both coding-styles work under the hood. The graphs are different as is shown in the comparison between the deterministic models of R & python.
+Looking at the deterministic models from both Python and R, it shows that the graphs are identical, which is further supported by the t-test that was performed on the datasets generated from both Python and R.
+However, due to them not being a 100% match as expected, there are some differences in how Python and R process the exact same mathematical equations and data generation, the suspected cause of this is internal functions unique to each coding language.
 
 # Discussion
 
