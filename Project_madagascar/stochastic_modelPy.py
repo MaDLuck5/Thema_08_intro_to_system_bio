@@ -127,7 +127,7 @@ def plague_tau(x, t, dt, f_irf, f_itv_p, f_itv_b):
     return x_t
 
 # Data
-data_raw = pd.read_csv("C://Users//matsp//Downloads//plague2017-master//plague2017-master//data//dataBy.csv", sep=',')
+data_raw = pd.read_csv("data//dataBy.csv", sep=',')
 data_raw['date'] = pd.to_datetime(data_raw['date'])
 start_date = data_raw[data_raw['date'] == pd.to_datetime('22/09/2017')].index[0]
 data_raw = data_raw[start_date:]
@@ -190,4 +190,4 @@ axes[1].set_title('Pneumonic', fontsize=18)
 axes[0].legend(loc=(0.4,-0.3), ncol=3, fontsize=16)
 
 plt.tight_layout()
-plt.savefig('C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig2.pdf', dpi=300, bbox_inches='tight')
+plt.savefig('Stochastic_+_real_data_Fig2.pdf', dpi=300, bbox_inches='tight')

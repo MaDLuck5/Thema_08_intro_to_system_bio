@@ -8,7 +8,7 @@ handy capabilities to work with the [R Markdown](https://www.jetbrains.com/help/
 To [add](https://www.jetbrains.com/help/pycharm/r-markdown.html#add-code-chunk) a new R chunk,
 ```{r}
 library("deSolve")
-data <- read.csv("C:\\Users\\matsp\\Downloads\\plague2017-master\\plague2017-master\\test2.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
+data <- read.csv("C:\\Users\\matsp\\Downloads\\plague2017-master\\plague2017-master\\deterministic_model_data.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
 # options(digits = 15)
 ```
 ```{r}

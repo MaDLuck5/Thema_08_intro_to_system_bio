@@ -115,7 +115,7 @@ library("pander")
 working_directory <- getwd()
 # get the directory for the data_file
 data_file_bugfix <- paste(working_directory, "/Project_madagascar/Data/", sep = "")
-data <- read.csv("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//test2.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
+data <- read.csv("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//deterministic_model_data.csv", col.names = c('Sb','Sy','Eb','Ey','Ib','Ip', 'tijd'))
 # options(digits = 15)
 
 # Run a test to see if the data imported correctly
@@ -197,11 +197,11 @@ plot(as.data.frame(out)$Ip, type = "l", xlab = "Time in Days", ylab = "Pneumonic
 
 # python code figures
 # These 2 knitr commands are for ease of use for knitting at home.
-# knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig1.pdf")
-# knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Fig2.pdf")
+# knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Deterministic_Fig1.pdf")
+# knitr::include_graphics("C://Users//matsp//Documents//Thema08//Thema_08_intro_to_system_bio//Project_madagascar//Stochastic_+_real_data_Fig2.pdf")
 
-knitr::include_graphics("Fig1.pdf")
-knitr::include_graphics("Fig2.pdf")
+knitr::include_graphics("Deterministic_Fig1.pdf")
+knitr::include_graphics("Stochastic_+_real_data_Fig2.pdf")
 
 # to test sample differance with a simple T-test
 print("bubonic comparison")
